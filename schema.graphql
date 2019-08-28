@@ -1,0 +1,55 @@
+
+"""This is where the logic will start, the root query and root mutation will hold the definitions for the queries and mutations respectively"""
+schema {
+    query: Query
+    mutation: Mutation
+}
+
+type Query {
+    """Get the given player from the db based on the Guid, returns a player object"""
+    map(
+        id: Guid!
+    ): mapGraph
+}
+
+type Mutation {
+    createMap(
+        map: mapGraph!
+    ): statusCodeGraph
+    updatePosition(
+        id: Guid!
+        x: Int!
+        y: Int!
+    ): statusCodeGraph
+}
+
+type mapGraph {
+    id: Guid!
+    tiles: [tileGraph]!
+    imageLink: String!
+}
+
+type tileGraph {
+    id: Guid!
+    height: Int!
+    width: Int!
+    x: Int!
+    y: Int!
+    type: terrainEnum!
+    entities: [entityGraph]!
+}
+
+enum terrainEnum {
+    IMPASSABLE
+    PASSABLE
+    ROUGH
+    SLIPPERY
+}
+
+scalar statusCodeGraph
+scalar Int
+scalar Float
+scalar Boolean
+scalar String
+scalar Guid
+scalar Date
