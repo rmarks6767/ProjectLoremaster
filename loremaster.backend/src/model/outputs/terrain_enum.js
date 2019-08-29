@@ -1,5 +1,5 @@
 var {GraphQLEnumType} = require('graphql');
-export const TerrainEnum = new GraphQLEnumType({
+const TerrainEnum = new GraphQLEnumType({
   name: "TerrainEnum",
   values: {
     IMPASSABLE: { value: 0 },
@@ -8,3 +8,7 @@ export const TerrainEnum = new GraphQLEnumType({
     SLIPPERY:{ value: 3 },
   }  
 })
+
+module.exports = {
+  TerrainEnum
+}

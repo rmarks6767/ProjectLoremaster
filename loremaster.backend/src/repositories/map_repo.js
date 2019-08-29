@@ -4,8 +4,10 @@ module.exports = {
         var connection = SQLCONNECT()
         //Connection success
         if (connection){
-            connection.query(`INSERT INTO maps (ID, name, image_link) VALUES (${args.ID},${args.name},${args.image_link})`,function(error,result){
-                
+            connection.query(`INSERT INTO maps (ID, name, image_link) VALUES (${args.id},${args.name},${args.image_link})`,function(error,result){
+                console.log(result)
+                console.log(error)
+                return null    
             })
         }
     }
