@@ -1,0 +1,17 @@
+{
+  "name": "loremaster.backend",
+  "version": "0.0.1",
+  "description": "A NodeJs + GraphQL API for connecting to a MySQL db for the Project Loremaster DND Table TM",
+  "main": "server.js",
+  "scripts": {
+    "start": "node src/server.js"
+  },
+  "author": "Headass House TM",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.17.1",
+    "express-graphql": "^0.9.0",
+    "graphql": "^14.5.4",
+    "mysql": "^2.17.1"
+  }
+}
