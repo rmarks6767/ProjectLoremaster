@@ -1,5 +1,5 @@
-var {GraphQLObjectType, GraphQLID , GraphQLList,GraphQLString, GraphQLNonNull} = require('graphql');
-var {Tile} = require('./tile')
+var { GraphQLObjectType, GraphQLID, GraphQLList, GraphQLString, GraphQLNonNull } = require('graphql');
+var { Tile } = require('./tile')
 const Map = new GraphQLObjectType({
     name: "map",
     description: "a map object",

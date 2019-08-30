@@ -1,21 +1,13 @@
 var express = require('express'); //Serves requests
 var express_graphql = require('express-graphql') //express-graphql
-var {buildSchema} = require('graphql')
-var { createMap } = require('./mutations/map_mutation')
-var fs = require('fs')
+var { schema } = require('./graphql/schema')
 
-const schema = buildSchema(fs.readFile("../schema.graphql"))
-
-var root = {
-    createMap: createMap
-
-}
+const port = 4000
 
 var app = express() //Creating an app instance
-app.use("/graphql",express_graphql({
+app.use("/graphql", express_graphql({
     schema: schema,
-    rootValue: root,
     graphiql: true,
 }))
 
-app.listen(4000)
+app.listen(port, () => console.log(`Listening on http://localhost:${port}/graphql`))
