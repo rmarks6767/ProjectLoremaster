@@ -1,20 +1,21 @@
-const {InsertMap} = require('../../repositories/map_repo')
-const { MapInput } = require("../model/inputs/map_input");
-const { Map } = require("../model/outputs/map")
+const { InsertMap } = require('../../repositories/map_repo')
+const { MapInput } = require('../model/inputs/map_input');
+const { StatusCode } = require('../model/outputs/status_code')
+const { GraphQLNonNull } = require('graphql');
 
 const createMap = {
-    type: Map,
-    description: "a map",
+    type: StatusCode,
+    description: 'a map',
     args: {
         map:{
-            name:"map",
-            type: MapInput,
+            name:'map',
+            type: new GraphQLNonNull(MapInput),
         }
     },
-    resolve: () => {
-        console.log(args);
-        
-        return InsertMap(args)
+    resolve (root, params, options){        
+        const statusCode = InsertMap(params.map);
+        console.log(statusCode)
+        return statusCode
     }
 }
 

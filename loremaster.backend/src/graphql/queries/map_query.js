@@ -3,7 +3,7 @@ var { Map } = require("../model/outputs/map");
 const mapQuery = {
     type: Map,
     description: "a map",
-    resolve: () => {
+    resolve: function() {
         return {
             id: "gg"
         }
