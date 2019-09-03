@@ -1,3 +1,5 @@
+const { performance } = require('perf_hooks');
+
 module.exports = {
     generateUUID: function() { // Public Domain/MIT
         var d = new Date().getTime();//Timestamp

@@ -1,4 +1,4 @@
-const { InsertMap } = require('../../repositories/map_repo')
+const { InsertMap, InsertTiles } = require('../../repositories/map_repo')
 const { MapInput } = require('../model/inputs/map_input');
 const { StatusCode } = require('../model/outputs/status_code')
 const { GraphQLNonNull } = require('graphql');
@@ -13,9 +13,14 @@ const createMap = {
         }
     },
     resolve (root, params, options){        
-        const statusCode = InsertMap(params.map);
-        console.log(statusCode)
-        return statusCode
+        var mapStatusCode = InsertMap(params.map);
+        var tilesStatusCode = InsertTiles(params.map.tiles);
+        if (mapStatusCode == tilesStatusCode){
+            return mapStatusCode;
+        }  
+        console.log(mapStatusCode);
+        console.log(tilesStatusCode);
+        return null;
     }
 }
 

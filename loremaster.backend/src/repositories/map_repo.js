@@ -26,5 +26,24 @@ module.exports = {
                 message: 'Bad Request'
             }
         }
+    },
+    InsertTiles: function(tiles){
+        const connection = SQLCONNECT();
+        tiles.foreach(function(tile){
+            connection.query(`INSERT INTO tiles (ID, height, width, x, y, map_id, type) VALUES ("${generateUUID()}","${tile.height}","${tile.width}","${tile.x}","${tile.y}","${tile.map_id}","${tile.type}")`,function(error,result){
+                if(error){
+                    return {
+                       code: error.code,
+                       message: error.message
+                    } 
+                } else {
+                    console.log(result)
+                    return {
+                        code: 200,
+                        message:"OK"
+                    }
+                }      
+            });
+        });
     }
 }
