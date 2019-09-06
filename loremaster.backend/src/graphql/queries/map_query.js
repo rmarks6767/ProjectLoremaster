@@ -1,13 +1,17 @@
-var { Map } = require("../model/outputs/map");
+const { Map } = require("../model/outputs/map");
+const { GraphQLNonNull, GraphQLString } = require('graphql'); 
+const MapRepo = require('../../repositories/map_repo')
 
 const mapQuery = {
     type: Map,
     description: "a map",
-    resolve: function() {
-        return {
-            id: "gg"
+    args: {
+        id: {
+            name: "id",
+            type: new GraphQLNonNull(GraphQLString)
         }
-    }
+    },
+    resolve: MapRepo.GetMapById.bind(MapRepo)
 }
 
 module.exports = {

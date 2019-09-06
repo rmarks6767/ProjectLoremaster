@@ -2,6 +2,47 @@ const { SQLCONNECT } = require('./sql_connect')
 const { generateUUID } = require('../extra_functions/generate_uuid')
 
 module.exports = {
+    GetMapById: function(_, { id }){
+        const connection = SQLCONNECT()
+        
+        
+
+        if (connection){
+            var map = {
+                id: null,
+                name: null,
+                image_link: null,
+                tiles: []
+            }
+            connection.query(`SELECT * FROM maps WHERE maps.ID="${id}"`, function(error, result){
+                if (result){
+                    console.log(result[0].ID)
+                    
+                } else if(error){
+                    throw new Error(error);
+                } else {
+                    map = null;
+                }
+            });
+
+            connection.query(`SELECT * FROM tiles WHERE tiles.map_id="${id}"`, function(error, result){
+                if(result){
+                    result.forEach(tile => {
+                        return map.tiles.push(tile);
+                    })
+                    console.log(map)
+                } else if(error){
+                    throw new Error(error);
+                } else {
+                    map = null;
+                }
+            });
+            return map;
+        } else {
+            return null;
+        }
+
+    },
     InsertMap: function(_, { map }){
         const connection = SQLCONNECT()
         const mapGUID = generateUUID()
