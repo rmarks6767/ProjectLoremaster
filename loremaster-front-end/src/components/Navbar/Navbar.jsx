@@ -1,21 +1,20 @@
 import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
 
 class Navbar extends Component{
 
-    changeLocation (loc) {
-        window.location=loc;
-    }
 
     render(){
         return(
             <div className="Navbar">
-                <div className="navbar navbar-fixed-top navbar-default">
+                <div className="navbar navbar-header navbar-fixed-top navbar-default">
                     <p className="nav navbar-brand">Project Loremaster</p>
 
                     <ul className="nav navbar-nav nav-tabs navbar-left" role="tablist">
-                        <li><button className="btn btn-link" onClick={this.changeLocation("#")}>Maps</button></li>
-                        <li><button className="btn btn-link" onclick={this.changeLocation("#")}>Characters</button></li>
-                        <li><button className="btn btn-link" onclick={this.changeLocation("#")}>Compendium</button></li>
+                        <li><Link to={'/home'}>Home</Link></li>
+                        <li><Link to={'/characters'}>Characters</Link></li>
+                        <li><Link to={'/maps'}>Maps</Link></li>
+                        <li><Link to={'/compendium'}>Compendium</Link></li>
                     </ul>
                 </div>
             </div>
