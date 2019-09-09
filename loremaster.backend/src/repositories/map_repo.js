@@ -4,41 +4,36 @@ const { generateUUID } = require('../extra_functions/generate_uuid')
 module.exports = {
     GetMapById: function(_, { id }){
         const connection = SQLCONNECT()
-        
-        
-
+        var map = null;
         if (connection){
-            var map = {
-                id: null,
-                name: null,
-                image_link: null,
-                tiles: []
-            }
-            connection.query(`SELECT * FROM maps WHERE maps.ID="${id}"`, function(error, result){
+            connection.query(`SELECT * FROM maps RIGHT JOIN tiles ON maps.ID=tiles.map_id WHERE maps.ID="${id}"ORDER BY tiles.map_id`, function(error, result){
                 if (result){
-                    console.log(result[0].ID)
+                    connection.end();
+                    map = {
+                        id: id,
+                        name: result[0].name,
+                        image_link: result[0].image_link,
+                        tiles: result.map(tile => {
+                            return {
+                                id: tile.ID,
+                                height: tile.height,
+                                width: tile.width,
+                                x: tile.x,
+                                y: tile.y,
+                                type: tile.type
+                            }
+                        })
+                    }
                     
                 } else if(error){
                     throw new Error(error);
                 } else {
                     map = null;
                 }
+                return map;
             });
-
-            connection.query(`SELECT * FROM tiles WHERE tiles.map_id="${id}"`, function(error, result){
-                if(result){
-                    result.forEach(tile => {
-                        return map.tiles.push(tile);
-                    })
-                    console.log(map)
-                } else if(error){
-                    throw new Error(error);
-                } else {
-                    map = null;
-                }
-            });
-            return map;
         } else {
+            console.log("REEEEE")
             return null;
         }
 
@@ -56,6 +51,12 @@ module.exports = {
                         code: error.code,
                         message: error.message
                     });
+                } else {
+                    connection.end();
+                    return {
+                        code: 200,
+                        message: "OK"
+                    } 
                 }
                 console.log("Inserted map")
             })
@@ -68,15 +69,15 @@ module.exports = {
                             code: error.code,
                             message: error.message
                         });
+                    } else {
+                        connection.end();
+                        return {
+                            code: 200,
+                            message: "OK"
+                        }
                     }
-                    console.log("Inserting tile")     
                 });
             });
-            connection.end();
-            return {
-                code: 200,
-                message: "OK"
-            }
         } else {
             console.log('Could not establish a connection')
             return({

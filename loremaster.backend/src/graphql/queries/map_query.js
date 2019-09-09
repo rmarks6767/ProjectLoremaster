@@ -1,9 +1,9 @@
-const { Map } = require("../model/outputs/map");
+const { map } = require("../model/outputs/map");
 const { GraphQLNonNull, GraphQLString } = require('graphql'); 
 const MapRepo = require('../../repositories/map_repo')
 
 const mapQuery = {
-    type: Map,
+    type: map,
     description: "a map",
     args: {
         id: {
