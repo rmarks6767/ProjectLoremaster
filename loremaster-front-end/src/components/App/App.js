@@ -7,8 +7,6 @@ import Content from '../Content/Content';
 var currentLocation = 'landing';
 
 class App extends Component {
-
-
   render(){
     return (
       <div className="App">

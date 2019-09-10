@@ -14,6 +14,7 @@ class Navbar extends Component{
                         <li><Link to={'/home'}>Home</Link></li>
                         <li><Link to={'/characters'}>Characters</Link></li>
                         <li><Link to={'/maps'}>Maps</Link></li>
+                        <li><Link to={'/campaigns'}>Campaigns</Link></li>
                         <li><Link to={'/compendium'}>Compendium</Link></li>
                     </ul>
                 </div>
