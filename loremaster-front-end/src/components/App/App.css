@@ -31,3 +31,18 @@
     transform: rotate(360deg);
   }
 }
+
+.Navbar{
+  width: 100%;
+  height: 4vh;
+}
+
+.Content{
+  width: 100%;
+  min-height: 86vh;
+}
+
+.Footer{
+  width: 100%;
+  height: 10vh;
+}

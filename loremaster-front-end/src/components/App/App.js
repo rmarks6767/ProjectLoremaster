@@ -3,6 +3,7 @@ import {BrowserRouter as Router} from 'react-router-dom';
 import './App.css';
 import Navbar from '../Navbar/Navbar';
 import Content from '../Content/Content';
+import Footer from '../Footer/Footer';
 
 var currentLocation = 'landing';
 
@@ -13,6 +14,7 @@ class App extends Component {
         <Router>
           <Navbar />
           <Content />
+          <Footer />
         </Router>
       </div>
     );
