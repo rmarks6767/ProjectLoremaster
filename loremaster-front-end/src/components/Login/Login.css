@@ -1,0 +1,8 @@
+#username, #password{
+    width: 80%;
+}
+
+.login-label{
+    position: relative;
+    right: 40%;
+}
