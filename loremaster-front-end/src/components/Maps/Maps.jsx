@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import Canvas from '../Canvas/Canvas';
 
 class Maps extends Component{
     render(){
@@ -7,6 +8,7 @@ class Maps extends Component{
                 <div className="jumbotron text-center">
                     <h1>Maps</h1>
                 </div>
+                <Canvas id="map" width="600px" height="300px"/>
             </div>
         );
     }
