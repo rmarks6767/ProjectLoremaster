@@ -20,7 +20,6 @@ class Canvas extends Component{
         this.canvasOnUp = this.canvasOnUp.bind(this);
         this.canvasOnLeave = this.canvasOnLeave.bind(this);
         this.addClick = this.addClick.bind(this);
-        this.redraw = this.redraw.bind(this);
 
     }
 
@@ -28,7 +27,7 @@ class Canvas extends Component{
         this.state.isPainting = true;
     
         this.addClick(event.pageX - this.canvas.offsetLeft, event.pageY - this.canvas.offsetTop, false);
-        // this.redraw();
+
         this.context.strokeStyle = "#df4b26";
         this.context.lineJoin = "round";
         this.context.lineWidth = 5;
@@ -45,7 +44,7 @@ class Canvas extends Component{
     canvasOnMove(event){
         if(this.state.isPainting) {
             this.addClick(event.pageX - this.canvas.offsetLeft, event.pageY - this.canvas.offsetTop, true);
-            // this.redraw();
+
             this.context.strokeStyle = "#df4b26";
             this.context.lineJoin = "round";
             this.context.lineWidth = 5;
@@ -61,7 +60,7 @@ class Canvas extends Component{
     }
     
     canvasOnUp(){
-        this.state.Painting = false;
+        this.state.isPainting = false;
         console.log("Mosue Up");
     }
     
@@ -74,27 +73,6 @@ class Canvas extends Component{
         this.state.clickX.push(x);
         this.state.clickY.push(y);
         this.state.clickDrag.push(drag);
-    }
-    
-    redraw(){
-        this.context.clearRect(0, 0, this.state.width, this.state.height);
-    
-        this.context.strokeStyle = "#df4b26";
-        this.context.lineJoin = "round";
-        this.context.lineWidth = 5;
-    
-        for(var i = 0; i < this.state.clickX.length; i++) {
-            if(this.state.clickDrag[i] && i) {
-                this.context.moveTo(this.state.clickX[i-1], this.state.clickY[i-1]);
-            }
-            else{
-                this.context.moveTo(this.state.clickX[i] - 1, this.state.clickY[i]);
-            }
-    
-            this.context.lineTo(this.state.clickX[i], this.state.clickY[i]);
-            this.context.closePath();
-            this.context.stroke();
-        }
     }
 
     render(){
