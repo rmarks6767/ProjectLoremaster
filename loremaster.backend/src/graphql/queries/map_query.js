@@ -13,7 +13,7 @@ const mapQuery = {
         }
     },
     resolve: (source, args, root, ast) => {
-        console.log(GetProperties(ast.operation.selectionSet));
+        console.log(ast.operation.selectionSet.selections);
         return GetMapById(args.id );
     }
 }
