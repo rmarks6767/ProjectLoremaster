@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import './Canvas.css';
 
 class Canvas extends Component{
     canvas = null;
@@ -12,7 +13,8 @@ class Canvas extends Component{
             clickY : new Array(),
             clickDrag : new Array(),
             width : this.props.width,
-            height : this.props.height
+            height : this.props.height,
+            canvasName : this.props.canvasName
         };
 
         this.canvasOnClick = this.canvasOnClick.bind(this);
@@ -25,7 +27,7 @@ class Canvas extends Component{
 
     canvasOnClick(event){
         if(this.canvas == null || this.context == null) {
-            this.canvas = document.getElementById(this.props.canvasName);
+            this.canvas = document.getElementById(this.state.canvasName);
             this.context = this.canvas.getContext("2d");
         }
         else {
@@ -49,7 +51,7 @@ class Canvas extends Component{
     
     canvasOnMove(event){
         if(this.canvas == null || this.context == null) {
-            this.canvas = document.getElementById(this.props.canvasName);
+            this.canvas = document.getElementById(this.state.canvasName);
             this.context = this.canvas.getContext("2d");
         }
         else {
@@ -89,8 +91,13 @@ class Canvas extends Component{
 
     render(){
         return(
-            <div className="Canvas" width={this.props.width} height={this.props.height}>
-                <canvas id={this.props.canvasName} width={this.props.width} height={this.props.height} onMouseDown={this.canvasOnClick} onMouseUp={this.canvasOnUp} onMouseMove={this.canvasOnMove} onMouseLeave={this.canvasOnLeave}></canvas>
+            <div className="Canvas" width="100%" height={this.state.height}>
+                <div className="editorBar" width={this.state.width} height={this.state.height}>
+                    <button className="btn btn-simple">Red</button>
+                    <button className="btn btn-simple">Blue</button>
+                    <button className="btn btn-simple">Green</button>
+                </div>
+                <canvas id={this.state.canvasName} width={this.state.width} height={this.state.height} onMouseDown={this.canvasOnClick} onMouseUp={this.canvasOnUp} onMouseMove={this.canvasOnMove} onMouseLeave={this.canvasOnLeave}></canvas>
             </div>
         );
     }

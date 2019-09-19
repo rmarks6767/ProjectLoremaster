@@ -1,0 +1,14 @@
+.Canvas{
+    display: flex;
+    justify-content: space-around;
+}
+
+.editorBar{
+    border-style: solid;
+    border-width: 1px;
+}
+
+.Canvas canvas{
+    border-style: solid;
+    border-width: 1px;
+  }
