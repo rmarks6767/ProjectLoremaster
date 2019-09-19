@@ -8,7 +8,7 @@ class Maps extends Component{
                 <div className="jumbotron text-center">
                     <h1>Maps</h1>
                 </div>
-                <Canvas id="map" width="600px" height="300px"/>
+                <Canvas canvasName="map" width="600px" height="300px"/>
             </div>
         );
     }
