@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 
 class Canvas extends Component{
-
+    canvas = null;
     context = null;
 
     constructor(props){
@@ -24,38 +24,50 @@ class Canvas extends Component{
     }
 
     canvasOnClick(event){
-        this.state.isPainting = true;
-    
-        this.addClick(event.pageX - this.canvas.offsetLeft, event.pageY - this.canvas.offsetTop, false);
-
-        this.context.strokeStyle = "#df4b26";
-        this.context.lineJoin = "round";
-        this.context.lineWidth = 5;
-
-        this.context.moveTo(this.state.clickX[this.state.clickX.length - 1] - 1, this.state.clickY[this.state.clickX.length - 1]);
-
-        this.context.lineTo(this.state.clickX[this.state.clickX.length - 1], this.state.clickY[this.state.clickX.length - 1]);
-        this.context.closePath();
-        this.context.stroke();
-    
-        console.log("Mosue Click:", event.pageX - this.canvas.offsetLeft, event.pageY - this.canvas.offsetTop);
-    }
-    
-    canvasOnMove(event){
-        if(this.state.isPainting) {
-            this.addClick(event.pageX - this.canvas.offsetLeft, event.pageY - this.canvas.offsetTop, true);
+        if(this.canvas == null || this.context == null) {
+            this.canvas = document.getElementById(this.props.canvasName);
+            this.context = this.canvas.getContext("2d");
+        }
+        else {
+            this.state.isPainting = true;
+        
+            this.addClick(event.pageX - this.canvas.offsetLeft, event.pageY - this.canvas.offsetTop, false);
 
             this.context.strokeStyle = "#df4b26";
             this.context.lineJoin = "round";
             this.context.lineWidth = 5;
 
-            this.context.moveTo(this.state.clickX[this.state.clickX.length - 2] - 1, this.state.clickY[this.state.clickX.length - 2]);
+            this.context.moveTo(this.state.clickX[this.state.clickX.length - 1] - 1, this.state.clickY[this.state.clickX.length - 1]);
 
             this.context.lineTo(this.state.clickX[this.state.clickX.length - 1], this.state.clickY[this.state.clickX.length - 1]);
             this.context.closePath();
             this.context.stroke();
+        
+            console.log("Mosue Click:", event.pageX - this.canvas.offsetLeft, event.pageY - this.canvas.offsetTop);
+        }
+    }
     
-            console.log("Mosue Move");
+    canvasOnMove(event){
+        if(this.canvas == null || this.context == null) {
+            this.canvas = document.getElementById(this.props.canvasName);
+            this.context = this.canvas.getContext("2d");
+        }
+        else {
+            if(this.state.isPainting) {
+                this.addClick(event.pageX - this.canvas.offsetLeft, event.pageY - this.canvas.offsetTop, true);
+
+                this.context.strokeStyle = "#df4b26";
+                this.context.lineJoin = "round";
+                this.context.lineWidth = 5;
+
+                this.context.moveTo(this.state.clickX[this.state.clickX.length - 2] - 1, this.state.clickY[this.state.clickX.length - 2]);
+
+                this.context.lineTo(this.state.clickX[this.state.clickX.length - 1], this.state.clickY[this.state.clickX.length - 1]);
+                this.context.closePath();
+                this.context.stroke();
+        
+                console.log("Mosue Move");
+            }
         }
     }
     
@@ -78,7 +90,7 @@ class Canvas extends Component{
     render(){
         return(
             <div className="Canvas" width={this.props.width} height={this.props.height}>
-                <canvas id={this.props.canvasName} ref={(c) => {this.canvas = c; this.context = c.getContext('2d');}} width={this.props.width} height={this.props.height} onMouseDown={this.canvasOnClick} onMouseUp={this.canvasOnUp} onMouseMove={this.canvasOnMove} onMouseLeave={this.canvasOnLeave}></canvas>
+                <canvas id={this.props.canvasName} width={this.props.width} height={this.props.height} onMouseDown={this.canvasOnClick} onMouseUp={this.canvasOnUp} onMouseMove={this.canvasOnMove} onMouseLeave={this.canvasOnLeave}></canvas>
             </div>
         );
     }
