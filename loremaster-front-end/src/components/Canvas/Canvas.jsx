@@ -9,9 +9,7 @@ class Canvas extends Component{
         super(props);
         this.state={
             isPainting : false,
-            clickX : new Array(),
-            clickY : new Array(),
-            clickDrag : new Array(),
+            clicks : new Array(),
             width : this.props.width,
             height : this.props.height,
             canvasName : this.props.canvasName
@@ -22,7 +20,7 @@ class Canvas extends Component{
         this.canvasOnUp = this.canvasOnUp.bind(this);
         this.canvasOnLeave = this.canvasOnLeave.bind(this);
         this.addClick = this.addClick.bind(this);
-
+        this.refresh = this.refresh.bind(this);
     }
 
     canvasOnClick(event){
@@ -39,9 +37,9 @@ class Canvas extends Component{
             this.context.lineJoin = "round";
             this.context.lineWidth = 5;
 
-            this.context.moveTo(this.state.clickX[this.state.clickX.length - 1] - 1, this.state.clickY[this.state.clickX.length - 1]);
+            this.context.moveTo(this.state.clicks[this.state.clicks.length - 1].xpos - 1, this.state.clicks[this.state.clicks.length - 1].ypos);
 
-            this.context.lineTo(this.state.clickX[this.state.clickX.length - 1], this.state.clickY[this.state.clickX.length - 1]);
+            this.context.lineTo(this.state.clicks[this.state.clicks.length - 1].xpos, this.state.clicks[this.state.clicks.length - 1].ypos);
             this.context.closePath();
             this.context.stroke();
         
@@ -62,9 +60,9 @@ class Canvas extends Component{
                 this.context.lineJoin = "round";
                 this.context.lineWidth = 5;
 
-                this.context.moveTo(this.state.clickX[this.state.clickX.length - 2] - 1, this.state.clickY[this.state.clickX.length - 2]);
+                this.context.moveTo(this.state.clicks[this.state.clicks.length - 2].xpos, this.state.clicks[this.state.clicks.length - 2].ypos);
 
-                this.context.lineTo(this.state.clickX[this.state.clickX.length - 1], this.state.clickY[this.state.clickX.length - 1]);
+                this.context.lineTo(this.state.clicks[this.state.clicks.length - 1].xpos, this.state.clicks[this.state.clicks.length - 1].ypos);
                 this.context.closePath();
                 this.context.stroke();
         
@@ -84,9 +82,32 @@ class Canvas extends Component{
     }
     
     addClick(x, y, drag){
-        this.state.clickX.push(x);
-        this.state.clickY.push(y);
-        this.state.clickDrag.push(drag);
+        if(drag) {
+            this.state.clicks.push({xpos : x, ypos : y, prev : this.state.clicks[this.state.clicks.length - 1]});
+        }
+        else {
+            this.state.clicks.push({xpos : x, ypos : y, prev : -1});
+        }
+    }
+
+    refresh() {
+        this.context.clearRect(0,0,this.context.canvas.width,this.context.canvas.height);
+
+        for(var i = 0; i < this.state.clicks.length; i++) {
+            this.context.strokeStyle = "#df4b26";
+            this.context.lineJoin = "round";
+            this.context.lineWidth = 5;
+            if(this.state.clicks[i].prev == -1) {
+                this.context.moveTo(this.state.clicks[i].prev.xpos, this.state.clicks[i].prev.ypos);
+            }
+            else {
+                this.context.moveTo(this.state.clicks[i].xpos - 1, this.state.clicks[i].ypos);
+            }
+            
+            this.context.lineTo(this.state.clicks[i].xpos, this.state.clicks[i].ypos);
+            this.context.closePath();
+            this.context.stroke();
+        }
     }
 
     render(){
@@ -95,7 +116,7 @@ class Canvas extends Component{
                 <div className="editorBar" width={this.state.width} height={this.state.height}>
                     <button className="btn btn-simple">Red</button>
                     <button className="btn btn-simple">Blue</button>
-                    <button className="btn btn-simple">Green</button>
+                    <button className="btn btn-simple" onClick={this.refresh}>Test</button>
                 </div>
                 <canvas id={this.state.canvasName} width={this.state.width} height={this.state.height} onMouseDown={this.canvasOnClick} onMouseUp={this.canvasOnUp} onMouseMove={this.canvasOnMove} onMouseLeave={this.canvasOnLeave}></canvas>
             </div>
