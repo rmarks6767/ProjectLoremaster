@@ -1,12 +1,9 @@
-
-"""This is where the logic will start, the root query and root mutation will hold the definitions for the queries and mutations respectively"""
 schema {
     query: Query
     mutation: Mutation
 }
 
 type Query {
-    """Get the given player from the db based on the Guid, returns a player object"""
     map(
         id: Guid!
     ): mapGraph
@@ -14,7 +11,7 @@ type Query {
 
 type Mutation {
     createMap(
-        map: mapGraph!
+        map: mapInput!
     ): statusCodeGraph
     updatePosition(
         id: Guid!
@@ -29,6 +26,13 @@ type mapGraph {
     imageLink: String!
 }
 
+input mapInput {
+    id: Guid!
+    name: String!
+    tiles: [tileInput]!
+    imageLink: String!
+}
+
 type tileGraph {
     id: Guid!
     height: Int!
@@ -36,7 +40,20 @@ type tileGraph {
     x: Int!
     y: Int!
     type: terrainEnum!
-    entities: [entityGraph]!
+}
+
+input tileInput {
+    id: Guid!
+    height: Int!
+    width: Int!
+    x: Int!
+    y: Int!
+    type: terrainEnum!
+}
+
+type statusCodeGraph {
+    code: Int!
+    message: String!
 }
 
 enum terrainEnum {
@@ -46,7 +63,6 @@ enum terrainEnum {
     SLIPPERY
 }
 
-scalar statusCodeGraph
 scalar Int
 scalar Float
 scalar Boolean
