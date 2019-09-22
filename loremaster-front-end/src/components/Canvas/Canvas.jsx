@@ -97,8 +97,10 @@ class Canvas extends Component{
             this.context.strokeStyle = "#df4b26";
             this.context.lineJoin = "round";
             this.context.lineWidth = 5;
-            if(this.state.clicks[i].prev == -1) {
+
+            if(this.state.clicks[i].prev != -1) {
                 this.context.moveTo(this.state.clicks[i].prev.xpos, this.state.clicks[i].prev.ypos);
+                console.log("yo");
             }
             else {
                 this.context.moveTo(this.state.clicks[i].xpos - 1, this.state.clicks[i].ypos);
