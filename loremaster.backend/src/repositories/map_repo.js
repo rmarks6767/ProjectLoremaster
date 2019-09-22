@@ -5,14 +5,14 @@ module.exports = {
     GetMapById: function( id ){
         const connection = SQLCONNECT()
 
-        return new Promise((succeed, failure) => {
+        return new Promise((success, failure) => {
             if (connection){
                 connection.query(`SELECT * FROM maps RIGHT JOIN tiles ON maps.ID=tiles.map_id WHERE maps.ID="${id}"ORDER BY tiles.map_id`, (error, result) => {
-                    if (result){
-                        return succeed({
-                            id: id,
-                            name: result[0].name,
-                            image_link: result[0].image_link,
+                    if (result[0]){
+                        return success({
+                            id: result[0].ID,
+                            name: result[0].name ,
+                            image_link: result[0].image_link ,
                             tiles: result.map(tile => {
                                 return {
                                     id: tile.ID,
@@ -28,10 +28,8 @@ module.exports = {
                     } else if(error){
                         return failure(error);
                     } else {
-                        map = null;
+                        return failure("Not Found");
                     }
-                    console.log(map);
-                    return map;
                 });
             } else {
                 console.log("REEEEE")

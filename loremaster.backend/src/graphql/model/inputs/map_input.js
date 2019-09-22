@@ -1,5 +1,6 @@
 var { GraphQLInputObjectType, GraphQLList, GraphQLString, GraphQLNonNull } = require('graphql');
 var { TileInput } = require('./tile_input')
+
 const MapInput = new GraphQLInputObjectType({
     name: "mapInput",
     fields: {

@@ -1,5 +1,5 @@
 var {GraphQLInputObjectType, GraphQLNonNull,GraphQLInt} = require('graphql');
-var {TerrainEnum} = require('../outputs/terrain_enum');
+var {TerrainEnum} = require('../outputs/enums/terrain_enum');
 const TileInput = new GraphQLInputObjectType({
     name: "tileInput",
     fields: {
