@@ -46,3 +46,12 @@
   width: 100%;
   height: 10vh;
 }
+
+.Landing img{
+  width: 20em;
+  height: 20em;
+}
+
+.Landing .container p{
+  margin: 1em;
+}
