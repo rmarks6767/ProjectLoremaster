@@ -1,33 +1,46 @@
 module.exports = {
     WHERE: function(ANDList) {
-        ANDList.forEach(AND => {
-            return this.AND(AND);
+        const and = null;
+        return new Promise((success) => {
+            ANDList.forEach(AND => {
+                if (and){
+                    and = `${and} AND ${this.AND(AND)}`;    
+                } else {
+                    and = this.AND(AND);
+                }
+            });
+            return success(and);
         });
     },
     AND: function(ORList) {
-        const ors = ORList.forEach(OR => {
-            return this.OR(OR);
+        const or = null; 
+        return new Promise((success) => {
+            ORList.forEach(OR => {
+                if (or){
+                    or = `${or} OR ${this.OR(OR)}`;    
+                } else {
+                    or = this.OR(OR);
+                }
+            });
+            return success(or);
         });
-
-        if (ors.length == 1){
-            return ors;
-        } 
     },
-    OR: function(Filters) {
+    /// SHOULD ADD A FUNCTION FOR TRY CATCHING IF THE COMPARISON VALUES ARE NOT NUMBERS
+    OR: function(Filters) { 
         Filters.forEach(filter => {
             switch(filter.Operation) {
                 case 0: // EQUALS operation
-                    return `maps.${filter.property}="${filter.value}"`;
+                    return `${filter.property}="${filter.value}"`;
                 case 1: // CONTAINS operation
-                    return `maps.${filter.property}.contains("${filter.vallue}")`;
+                    return `${filter.property} LIKE ("${filter.vallue}")`;
                 case 2: // LT operation
-                    return `maps.${filter.property}<${filter.value}`;                    
+                    return `${filter.property}<${filter.value}`;                    
                 case 3: // LTE operation
-                    return `maps.${filter.property}<=${filter.value}`;                                        
+                    return `${filter.property}<=${filter.value}`;                                        
                 case 4: // GT operation
-                    return `maps.${filter.property}>${filter.value}`;                                                    
+                    return `${filter.property}>${filter.value}`;                                                    
                 case 5: // GTE operation
-                    return `maps.${filter.property}>=${filter.value}`;                                                    
+                    return `${filter.property}>=${filter.value}`;                                                    
             }
         });
     }

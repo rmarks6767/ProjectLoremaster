@@ -1,7 +1,7 @@
 const { GraphQLEnumType } = require('graphql');
 
 const OperationEnum = new GraphQLEnumType({
-  name: "Operation Enum",
+  name: "OperationEnum",
   values: {
     EQUALS: { value: 0 },
     CONTAINS: { value: 1 },

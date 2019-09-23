@@ -2,7 +2,7 @@ const { SQLCONNECT } = require('./sql_connect');
 
 
 module.exports = {
-    SELECT: function(table, expression){
+    SELECT: function(table, expression = null){
         const connection = SQLCONNECT();
         return new Promise((success, failure) => {
             connection.query(`
@@ -13,7 +13,7 @@ module.exports = {
                 }
                 return success(result.forEach(element => {
                     return element;
-                }));
+                }))
             });
         })
     }
