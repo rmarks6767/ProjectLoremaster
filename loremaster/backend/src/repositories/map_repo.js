@@ -7,7 +7,7 @@ module.exports = {
 
         return new Promise((success, failure) => {
             if (connection){
-                connection.query(`SELECT * FROM maps RIGHT JOIN tiles ON maps.ID=tiles.map_id WHERE maps.ID="${id}"ORDER BY tiles.map_id`, (error, result) => {
+                connection.query(`SELECT * FROM maps RIGHT JOIN tiles ON maps.ID=tiles.map_id WHERE maps.ID="${id}" ORDER BY tiles.map_id`, (error, result) => {
                     if (result[0]){
                         return success({
                             id: result[0].ID,
