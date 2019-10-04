@@ -1,4 +1,12 @@
 .login-button {
-    margin-top: 10px;
-    margin-right: 10px;
+    margin-top: 1rem;
+    margin-right: 1rem;
+}
+
+.nav-collapse{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+    margin-top: 5rem;
 }
