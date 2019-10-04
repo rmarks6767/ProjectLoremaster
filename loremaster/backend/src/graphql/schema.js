@@ -1,9 +1,6 @@
-//import { GraphQLSchema, GraphQLObjectType } from './graphql';
-//import { mapQuery } from './queries/map_query';
-//import { createMap } from './mutations/map_mutation';
 const { GraphQLSchema, GraphQLObjectType } = require('graphql');
-const { mapQuery } = require('./queries/map_query');
-const { createMap } = require('./mutations/map_mutation');
+const { mapQuery } = require('./queries/map/mapQuery');
+const { createMap } = require('./mutations/mapMutation');
 
 const RootQuery = new GraphQLObjectType({
     name: 'rootQuery',

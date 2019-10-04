@@ -1,5 +1,5 @@
-const { SQLCONNECT } = require('../sql/sql_connect')
-const { generateUUID } = require('../extra_functions/generate_uuid')
+const { SQLCONNECT } = require('../sql/SQLConnect')
+const { generateUUID } = require('../extraFunctions/generateUUID')
 
 module.exports = {
     GetMapById: function( id ){
@@ -12,17 +12,19 @@ module.exports = {
                         return success({
                             id: result[0].ID,
                             name: result[0].name ,
-                            image_link: result[0].image_link ,
-                            tiles: result.map(tile => {
-                                return {
-                                    id: tile.ID,
-                                    height: tile.height,
-                                    width: tile.width,
-                                    x: tile.x,
-                                    y: tile.y,
-                                    type: tile.type
-                                }
-                            })
+                            image_link: result[0].image_link 
+                            // tiles: result.map(tile => {
+                            //     const tile = {
+                            //         id: tile.ID,
+                            //         height: tile.height,
+                            //         width: tile.width,
+                            //         x: tile.x,
+                            //         y: tile.y,
+                            //         type: tile.type
+                            //     }
+                            //     console.log(tile);
+                            //     return tile;
+                            // })
                         });
                         
                     } else if(error){

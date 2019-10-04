@@ -1,16 +1,15 @@
 var { GraphQLObjectType, GraphQLID, GraphQLList, GraphQLString, GraphQLNonNull } = require('graphql');
-var { Tile } = require('./tile')
-const map = new GraphQLObjectType({
-    name: "map",
-    description: "a map object",
+
+const mapData = new GraphQLObjectType({
+    name: "mapData",
+    description: "The data of the map",
     fields: {
         id: { type: new GraphQLNonNull(GraphQLID) },
         name: { type: new GraphQLNonNull(GraphQLString) },
         image_link: { type: new GraphQLNonNull(GraphQLString) },
-        tiles: { type: new GraphQLList(Tile) }
     }
 })
 
 module.exports = {
-    map
+    mapData
 }

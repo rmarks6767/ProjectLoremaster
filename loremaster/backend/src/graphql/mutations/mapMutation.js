@@ -1,6 +1,6 @@
-const mapRepo = require('../../repositories/map_repo');
-const { MapInput } = require('../model/inputs/map_input');
-const { StatusCode } = require('../model/outputs/status_code')
+const mapRepo = require('../../repositories/mapRepo');
+const { MapInput } = require('../model/inputs/mapInput');
+const { StatusCode } = require('../model/outputs/statusCode')
 const { GraphQLNonNull } = require('graphql'); 
 
 const createMap = {

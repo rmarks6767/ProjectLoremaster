@@ -1,5 +1,5 @@
 const { GraphQLInputObjectType, GraphQLList } = require('graphql');
-const { OrInput } = require('../../inputs/matrix_wheres/or'); 
+const { OrInput } = require('../../inputs/matrixWheres/or'); 
 
 const AndInput = new GraphQLInputObjectType({
     name: "AND",

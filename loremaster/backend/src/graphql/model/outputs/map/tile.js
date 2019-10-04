@@ -1,8 +1,10 @@
-var {GraphQLInputObjectType, GraphQLNonNull,GraphQLInt} = require('graphql');
-var {TerrainEnum} = require('../outputs/enums/terrain_enum');
-const TileInput = new GraphQLInputObjectType({
-    name: "tileInput",
+var {GraphQLObjectType, GraphQLID, GraphQLNonNull,GraphQLInt} = require('graphql');
+var {TerrainEnum} = require('../enums/terrainEnum');
+const tile = new GraphQLObjectType({
+    name: "tile",
+    description: "a tile object",
     fields: {
+        id: { type: new GraphQLNonNull(GraphQLID) },
         height: { type: new GraphQLNonNull(GraphQLInt) },
         width: { type: new GraphQLNonNull(GraphQLInt) },
         x: { type: new GraphQLNonNull(GraphQLInt) },
@@ -12,5 +14,5 @@ const TileInput = new GraphQLInputObjectType({
 })
 
 module.exports = {
-    TileInput
+    tile
 }

@@ -1,5 +1,5 @@
 const { GraphQLInputObjectType, GraphQLString, GraphQLNonNull } = require('graphql');
-const { OperationEnum } = require('../../outputs/enums/operation_enum'); 
+const { OperationEnum } = require('../../outputs/enums/operationEnum'); 
 
 const RequestFilterInput = new GraphQLInputObjectType({
     name: "FILTER",
