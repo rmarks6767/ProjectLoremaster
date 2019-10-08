@@ -9,20 +9,23 @@ class Navbar extends Component{
     render(){
         return(
             <div className="Navbar">
-                <nav className="navbar navbar-fixed-top navbar-default">
-                    <div className="navbar-header">
-                        <p className="nav navbar-brand">Project Loremaster</p>
+                <nav className="navbar navbar-expand-lg bg-light navbar-light">
+                    <a className="navbar-brand">Project Loremaster</a>
+
+                    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+
+                    <div className="collapse navbar-collapse" id="navbar">
+                        <ul className="navbar-nav nav-tabs">
+                            <li className="nav-item"><Link className="nav-link" to="/home" >Home</Link></li>
+                            <li className="nav-item"><Link className="nav-link" to="/characters" >Characters</Link></li>
+                            <li className="nav-item"><Link className="nav-link" to="/maps" >Maps</Link></li>
+                            <li className="nav-item"><Link className="nav-link" to="/campaigns" >Campaigns</Link></li>
+                            <li className="nav-item"><Link className="nav-link" to="/compendium" >Compendium</Link></li>
+                            <li className="nav-item"><button type="button" className="btn" data-toggle="modal" data-target="#login">Sign In</button></li>
+                        </ul>
                     </div>
-
-                    <ul className="nav navbar-nav nav-tabs" role="tablist">
-                        <li><Link to="/home" >Home</Link></li>
-                        <li><Link to="/characters" >Characters</Link></li>
-                        <li><Link to="/maps" >Maps</Link></li>
-                        <li><Link to="/campaigns" >Campaigns</Link></li>
-                        <li><Link to="/compendium" >Compendium</Link></li>
-                    </ul>
-
-                    <button type="button" className="btn btn-default pull-right login-button" data-toggle="modal" data-target="#login">Sign In</button>
                 </nav>
                 <Login />
             </div>
