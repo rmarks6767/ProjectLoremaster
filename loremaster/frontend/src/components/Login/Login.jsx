@@ -6,29 +6,28 @@ class Login extends Component{
     render(){
         return(
             <div className="Login">
-                <div className="modal fade" id="login" tabIndex="-1" role="dialog" aria-labelledby="loginLabel" aria-hidden="true">
-                    <div className="modal-dialog" role="document">
+                <div className="modal fade" id="login">
+                    <div className="modal-dialog modal-lg">
                         <div className="modal-content">
+
                             <div className="modal-header">
-                                <h3 className="modal-title" id="loginLabel">Project Loremaster Sign In</h3>
+                                <h1>Project Loremaster</h1>
                             </div>
+
                             <div className="modal-body">
-                                <div className="row">
-                                    <h4 className="login-label"><strong>Username</strong></h4>
-                                </div>
-                                <div className="row">
-                                    <input id="username" className="input input-sm" autoComplete="username"/>
-                                </div>
-                                <div className="row">
-                                    <h4 className="login-label"><strong>Password</strong></h4>
-                                </div>
-                                <div className="row">
-                                    <input id="password" className="input input-sm" autoComplete="current-password"/>
+                                <div className="form-group">
+                                    <label className="float-left" for="user">Email:</label>
+                                    <input type="email" className="form-control-plaintext bg-light" id="usr"/>
+
+                                    <label className="float-left" for="pwd">Password:</label>
+                                    <input type="password" className="form-control-plaintext bg-light" id="pwd"/>
                                 </div>
                             </div>
+
                             <div className="modal-footer">
                                 <button type="button" className="btn btn-primary">Sign In</button>
                             </div>
+
                         </div>
                     </div>
                 </div>

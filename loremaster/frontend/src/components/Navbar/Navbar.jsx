@@ -23,7 +23,7 @@ class Navbar extends Component{
                             <li className="nav-item"><Link className="nav-link" to="/maps" >Maps</Link></li>
                             <li className="nav-item"><Link className="nav-link" to="/campaigns" >Campaigns</Link></li>
                             <li className="nav-item"><Link className="nav-link" to="/compendium" >Compendium</Link></li>
-                            <li className="nav-item"><button type="button" className="btn" data-toggle="modal" data-target="#login">Sign In</button></li>
+                            <li className="nav-item"><button type="button" className="btn btn-primary" data-toggle="modal" data-target="#login">Sign In</button></li>
                         </ul>
                     </div>
                 </nav>
