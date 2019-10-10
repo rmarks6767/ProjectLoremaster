@@ -16,10 +16,10 @@ class Login extends Component{
 
                             <div className="modal-body">
                                 <div className="form-group">
-                                    <label className="float-left" for="user">Email:</label>
+                                    <label className="float-left" htmlFor="user">Email:</label>
                                     <input type="email" className="form-control-plaintext bg-light" id="usr"/>
 
-                                    <label className="float-left" for="pwd">Password:</label>
+                                    <label className="float-left" htmlFor="pwd">Password:</label>
                                     <input type="password" className="form-control-plaintext bg-light" id="pwd"/>
                                 </div>
                             </div>
