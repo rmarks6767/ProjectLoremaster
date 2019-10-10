@@ -20,7 +20,7 @@ class Navbar extends Component{
         else{
             switch(link){
                 case "home":
-                    for(i = 0; i < this.state.navItems.length(); i++){
+                    for(var i = 0; i < this.state.navItems.length(); i++){
                         this.state.navItems[i].className = "nav-item";
                     }
                     this.state.navItems[0].className = "nav-item active";
