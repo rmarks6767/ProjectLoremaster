@@ -11,7 +11,7 @@ class Navbar extends Component{
             <div className="Navbar">
                 <nav className="navbar navbar-fixed-top navbar-default">
                     <div className="navbar-header">
-                        <p className="nav navbar-brand">Project Loremaster</p>
+                        <Link to="/home"><p className="nav navbar-brand">Project Loremaster</p></Link>
                     </div>
 
                     <ul className="nav navbar-nav nav-tabs" role="tablist">
@@ -20,7 +20,7 @@ class Navbar extends Component{
                         <li><Link to="/maps" >Maps</Link></li>
                         <li><Link to="/campaigns" >Campaigns</Link></li>
                         <li><Link to="/compendium" >Compendium</Link></li>
-                    </ul>
+                    </ul>                      
 
                     <button type="button" className="btn btn-default pull-right login-button" data-toggle="modal" data-target="#login">Sign In</button>
                 </nav>

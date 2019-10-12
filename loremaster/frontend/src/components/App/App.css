@@ -38,6 +38,12 @@
   height: 4vh;
 }
 
+.NavbarNarrow{
+  width: 100%;
+  height: 4vh;
+  display: none;
+}
+
 .Content{
   width: 100%;
   min-height: 86vh;
@@ -55,4 +61,14 @@
 
 .Landing .container p{
   margin: 1em;
+}
+
+@media only screen and (max-width: 960px){
+  .Navbar{
+    display: none;
+  }
+
+  .NavbarNarrow{
+    display: initial;
+  }
 }
