@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import { Route } from 'react-router-dom';
-import Landing from '../Landing/Landing';
-import Characters from '../Characters/Characters';
-import Maps from '../Maps/Maps';
-import Compendium from '../Compendium/Compendium';
-import Campaigns from '../Campaigns/Campaigns';
+import Landing from '../Pages/Landing/Landing';
+import Characters from '../Pages/Characters/Characters';
+import Maps from '../Pages/Maps/Maps';
+import Compendium from '../Pages/Compendium/Compendium';
+import Campaigns from '../Pages/Campaigns/Campaigns';
 
 class Content extends Component{
 
