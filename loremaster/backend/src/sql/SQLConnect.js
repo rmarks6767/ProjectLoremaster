@@ -11,7 +11,8 @@ module.exports = {
         connection.connect(function(error){
             if(error){
                 console.log(error);
-                connection = null
+                throw new Error(error);                
+                //connection = null
             }
         })
         return connection;

@@ -1,3 +1,26 @@
+/// The structure that the following would interpret would look something like this:
+// {
+//     "where": {
+//         "and": [{
+//             "or": [{
+//                 "operator": EQUALS,
+//                 "property": "id",
+//                 "value": "kjd8ddf9isd93k3-d-3-d3e3ed3-3dds"
+//             },
+//             {
+//                 "operator": EQUALS,
+//                 "property": "id",
+//                 "value": "zsdsdsdsdsdcksj-d-3-d3e3ed3-3dds"
+//             }]
+//         }]
+//     }
+// }
+//
+// This translates to SELECT * FROM maps WHERE id="kjd8ddf9isd93k3-d-3-d3e3ed3-3dds" OR id="zsdsdsdsdsdcksj-d-3-d3e3ed3-3dds"
+// The WHERE clause is built by the following functions
+
+
+
 module.exports = {
     WHERE: function(ANDList) {
         const and = null;
