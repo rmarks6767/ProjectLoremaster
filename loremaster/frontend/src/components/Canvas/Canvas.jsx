@@ -17,17 +17,20 @@ const terrain = {
 class Canvas extends Component{
     canvas = null;
     context = null;
+    brushSize = null;
 
     constructor(props){
         super(props);
         this.state={
             isPainting : false,
             clicks : new Array(),
+            prevClicks : new Array(),
             width : this.props.width,
             height : this.props.height,
             canvasName : this.props.canvasName,
             toolMode : tool.BRUSH,
-            toolTerrain : terrain.GRASS
+            toolTerrain : terrain.GRASS,
+            toolSize : 5
         };
 
         this.canvasOnClick = this.canvasOnClick.bind(this);
@@ -38,11 +41,14 @@ class Canvas extends Component{
         this.fill = this.fill.bind(this);
         this.setTool = this.setTool.bind(this);
         this.setTerrain = this.setTerrain.bind(this);
+        this.setToolSize = this.setToolSize.bind(this);
         this.refresh = this.refresh.bind(this);
+        this.clear = this.clear.bind(this);
+        this.undo = this.undo.bind(this);
     }
 
     canvasOnClick(event){
-        this.addClick(event.pageX - this.canvas.offsetLeft, event.pageY - this.canvas.offsetTop, false, this.state.toolMode, this.state.toolTerrain);
+        this.addClick(event.pageX - this.canvas.offsetLeft, event.pageY - this.canvas.offsetTop, false, this.state.toolMode, this.state.toolTerrain, this.state.toolSize);
 
         switch(this.state.toolMode){
             case tool.BRUSH:
@@ -58,7 +64,7 @@ class Canvas extends Component{
                     this.context.strokeStyle = terrain.BLANK;
                 }
                 this.context.lineJoin = "round";
-                this.context.lineWidth = 5;
+                this.context.lineWidth = this.state.toolSize;
 
                 this.context.moveTo(this.state.clicks[this.state.clicks.length - 1].xpos - 1, this.state.clicks[this.state.clicks.length - 1].ypos);
 
@@ -81,13 +87,11 @@ class Canvas extends Component{
                 console.log("ERROR: Invalid tool used on canvas");
                 break;
         }
-    
-        console.log("Mosue Click:", event.pageX - this.canvas.offsetLeft, event.pageY - this.canvas.offsetTop);
     }
     
     canvasOnMove(event){
         if(this.state.isPainting && (this.state.toolMode == tool.BRUSH || this.state.toolMode == tool.ERASE)) {
-            this.addClick(event.pageX - this.canvas.offsetLeft, event.pageY - this.canvas.offsetTop, true, this.state.toolMode, this.state.toolTerrain);
+            this.addClick(event.pageX - this.canvas.offsetLeft, event.pageY - this.canvas.offsetTop, true, this.state.toolMode, this.state.toolTerrain, this.state.toolSize);
 
             this.context.beginPath();
 
@@ -98,34 +102,30 @@ class Canvas extends Component{
                 this.context.strokeStyle = terrain.BLANK;
             }
             this.context.lineJoin = "round";
-            this.context.lineWidth = 5;
+            this.context.lineWidth = this.state.toolSize;
 
             this.context.moveTo(this.state.clicks[this.state.clicks.length - 2].xpos, this.state.clicks[this.state.clicks.length - 2].ypos);
 
             this.context.lineTo(this.state.clicks[this.state.clicks.length - 1].xpos, this.state.clicks[this.state.clicks.length - 1].ypos);
             this.context.closePath();
             this.context.stroke();
-    
-            console.log("Mosue Move");
         }
     }
     
     canvasOnUp(){
         this.state.isPainting = false;
-        console.log("Mosue Up");
     }
     
     canvasOnLeave(){
         this.state.isPainting = false;
-        console.log("Mosue Leave");
     }
     
-    addClick(x, y, drag, toolMode, toolTerrain){
+    addClick(x, y, drag, toolMode, toolTerrain, toolSize){
         if(drag) {
-            this.state.clicks.push({tool : toolMode, terrain: toolTerrain, xpos : x, ypos : y, prev : this.state.clicks[this.state.clicks.length - 1]});
+            this.state.clicks.push({tool : toolMode, terrain: toolTerrain, size : toolSize, xpos : x, ypos : y, prev : this.state.clicks[this.state.clicks.length - 1]});
         }
         else {
-            this.state.clicks.push({tool: toolMode, terrain: toolTerrain, xpos : x, ypos : y, prev : -1});
+            this.state.clicks.push({tool: toolMode, terrain: toolTerrain, size : toolSize, xpos : x, ypos : y, prev : -1});
         }
     }
 
@@ -196,8 +196,14 @@ class Canvas extends Component{
         this.state.toolTerrain = terrain;
     }
 
+    setToolSize(size){
+        this.state.toolSize = size;
+    }
+
     refresh(){
         this.context.clearRect(0,0,this.context.canvas.width,this.context.canvas.height);
+        this.context.fillStyle = terrain.BLANK;
+        this.context.fillRect(0, 0, this.canvas.width, this.canvas.height);
 
         for(var i = 0; i < this.state.clicks.length; i++) {
 
@@ -212,7 +218,7 @@ class Canvas extends Component{
                         this.context.strokeStyle = terrain.BLANK;
                     }
                     this.context.lineJoin = "round";
-                    this.context.lineWidth = 5;
+                    this.context.lineWidth = this.state.clicks[i].size;
 
                     if(this.state.clicks[i].prev != -1) {
                         this.context.moveTo(this.state.clicks[i].prev.xpos, this.state.clicks[i].prev.ypos);
@@ -243,6 +249,31 @@ class Canvas extends Component{
         }
     }
 
+    clear(){
+        this.context.clearRect(0,0,this.context.canvas.width,this.context.canvas.height);
+        this.context.fillStyle = terrain.BLANK;
+        this.context.fillRect(0, 0, this.canvas.width, this.canvas.height);
+        this.state.prevClicks = this.state.clicks;
+        this.state.clicks = new Array();
+    }
+
+    undo(){
+        if(this.state.clicks.length > 0){
+            while(this.state.clicks[this.state.clicks.length - 1].prev != -1)
+            {
+                this.state.clicks.pop();
+                this.refresh();
+            }
+            this.state.clicks.pop();
+            this.refresh();
+        }
+        else if(this.state.prevClicks > 0){
+            this.state.clicks = this.state.prevClicks;
+            this.state.prevClicks = new Array();
+            this.refresh();
+        }
+    }
+
     render(){
         return(
             <div className="Canvas" width="100%" height={this.state.height}>
@@ -250,9 +281,16 @@ class Canvas extends Component{
                     <button className="btn btn-primary" onClick={() => {this.setTool(tool.BRUSH);}}>Brush</button>
                     <button className="btn btn-primary" onClick={() => {this.setTool(tool.FILL);}}>Fill</button>
                     <button className="btn btn-primary" onClick={() => {this.setTool(tool.ERASE);}}>Erase</button>
+                    <br/>
                     <button className="btn btn-primary" onClick={() => {this.setTerrain(terrain.GRASS);}}>Grass</button>
                     <button className="btn btn-primary" onClick={() => {this.setTerrain(terrain.STONE);}}>Stone</button>
+                    <button className="btn btn-primary" onClick={() => {this.setTerrain(terrain.WATER);}}>Water</button>
+                    <br/>
+                    <input type="range" min="1" max="25" defaultValue="5" class="slider" id="brush-size"/>
+                    <br/>
+                    <button className="btn btn-primary" onClick={this.undo}>Undo</button>
                     <button className="btn btn-primary" onClick={this.refresh}>Refresh</button>
+                    <button className="btn btn-primary" onClick={this.clear}>Clear</button>
                 </div>
                 <canvas id={this.state.canvasName} width={this.state.width} height={this.state.height} onMouseDown={this.canvasOnClick} onMouseUp={this.canvasOnUp} onMouseMove={this.canvasOnMove} onMouseLeave={this.canvasOnLeave}></canvas>
             </div>
@@ -262,6 +300,11 @@ class Canvas extends Component{
     componentDidMount(){
         this.canvas = document.getElementById(this.state.canvasName);
         this.context = this.canvas.getContext("2d");
+        this.brushSize = document.getElementById("brush-size");
+
+        this.context.fillStyle = terrain.BLANK;
+        this.context.fillRect(0, 0, this.canvas.width, this.canvas.height);
+        this.brushSize.oninput = () => {this.setToolSize(this.brushSize.value);};
     }
 }
 
