@@ -77,6 +77,7 @@ class Navbar extends Component{
                         <span className="navbar-toggler-icon"></span>
                     </button>
 
+
                     <div className="collapse navbar-collapse" id="navbar">
                         <ul className="navbar-nav nav-tabs">
                             <li className="nav-item"><Link className="nav-link" to="/home" onClick={this.setLinkActive}>Home</Link></li>
