@@ -253,7 +253,7 @@ class Canvas extends Component{
         this.context.clearRect(0,0,this.context.canvas.width,this.context.canvas.height);
         this.context.fillStyle = terrain.BLANK;
         this.context.fillRect(0, 0, this.canvas.width, this.canvas.height);
-        this.state.prevClicks = this.state.clicks;
+        this.state.prevClicks = this.state.clicks.slice(0);
         this.state.clicks = new Array();
     }
 
@@ -267,8 +267,8 @@ class Canvas extends Component{
             this.state.clicks.pop();
             this.refresh();
         }
-        else if(this.state.prevClicks > 0){
-            this.state.clicks = this.state.prevClicks;
+        else if(this.state.prevClicks.length > 0){
+            this.state.clicks = this.state.prevClicks.slice(0);
             this.state.prevClicks = new Array();
             this.refresh();
         }
