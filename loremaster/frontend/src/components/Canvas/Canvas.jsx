@@ -11,7 +11,10 @@ const terrain = {
     BLANK : '#FFFFFF',
     GRASS : '#0C8F00',
     STONE : '#7A7A7A',
-    WATER : '#1897F2'
+    SAND : '#d1cb92',
+    DIRT: '#4d4924',
+    WATER : '#1897F2',
+    LAVA : '#ffb300'
 }
 
 class Canvas extends Component{
@@ -45,6 +48,7 @@ class Canvas extends Component{
         this.refresh = this.refresh.bind(this);
         this.clear = this.clear.bind(this);
         this.undo = this.undo.bind(this);
+        this.save = this.save.bind(this);
     }
 
     canvasOnClick(event){
@@ -253,7 +257,7 @@ class Canvas extends Component{
         this.context.clearRect(0,0,this.context.canvas.width,this.context.canvas.height);
         this.context.fillStyle = terrain.BLANK;
         this.context.fillRect(0, 0, this.canvas.width, this.canvas.height);
-        this.state.prevClicks = this.state.clicks;
+        this.state.prevClicks = this.state.clicks.slice(0);
         this.state.clicks = new Array();
     }
 
@@ -267,11 +271,16 @@ class Canvas extends Component{
             this.state.clicks.pop();
             this.refresh();
         }
-        else if(this.state.prevClicks > 0){
-            this.state.clicks = this.state.prevClicks;
+        else if(this.state.prevClicks.length > 0){
+            this.state.clicks = this.state.prevClicks.slice(0);
             this.state.prevClicks = new Array();
             this.refresh();
         }
+    }
+
+    save(){
+        var image = this.canvas.toDataURL("image/png").replace("image/png", "image/octet-stream");
+        window.location.href=image;
     }
 
     render(){
@@ -291,6 +300,7 @@ class Canvas extends Component{
                     <button className="btn btn-primary" onClick={this.undo}>Undo</button>
                     <button className="btn btn-primary" onClick={this.refresh}>Refresh</button>
                     <button className="btn btn-primary" onClick={this.clear}>Clear</button>
+                    <button className="btn btn-primary" onClick={this.save}>Save</button>
                 </div>
                 <canvas id={this.state.canvasName} width={this.state.width} height={this.state.height} onMouseDown={this.canvasOnClick} onMouseUp={this.canvasOnUp} onMouseMove={this.canvasOnMove} onMouseLeave={this.canvasOnLeave}></canvas>
             </div>
