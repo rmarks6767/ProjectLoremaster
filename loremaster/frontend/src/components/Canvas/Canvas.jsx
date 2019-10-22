@@ -28,8 +28,8 @@ class Canvas extends Component{
             isPainting : false,
             clicks : new Array(),
             prevClicks : new Array(),
-            width : this.props.width,
-            height : this.props.height,
+            mapWidth : this.props.width,
+            mapHeight : this.props.height,
             canvasName : this.props.canvasName,
             toolMode : tool.BRUSH,
             toolTerrain : terrain.GRASS,
@@ -286,23 +286,20 @@ class Canvas extends Component{
     render(){
         return(
             <div className="Canvas" width="100%" height={this.state.height}>
-                <div className="editorBar" width={this.state.width} height={this.state.height}>
+                <div className="editorBar" width="1000rem" height="75rem">
                     <button className="btn btn-primary" onClick={() => {this.setTool(tool.BRUSH);}}>Brush</button>
                     <button className="btn btn-primary" onClick={() => {this.setTool(tool.FILL);}}>Fill</button>
                     <button className="btn btn-primary" onClick={() => {this.setTool(tool.ERASE);}}>Erase</button>
-                    <br/>
                     <button className="btn btn-primary" onClick={() => {this.setTerrain(terrain.GRASS);}}>Grass</button>
                     <button className="btn btn-primary" onClick={() => {this.setTerrain(terrain.STONE);}}>Stone</button>
                     <button className="btn btn-primary" onClick={() => {this.setTerrain(terrain.WATER);}}>Water</button>
-                    <br/>
                     <input type="range" min="1" max="25" defaultValue="5" class="slider" id="brush-size"/>
-                    <br/>
                     <button className="btn btn-primary" onClick={this.undo}>Undo</button>
                     <button className="btn btn-primary" onClick={this.refresh}>Refresh</button>
                     <button className="btn btn-primary" onClick={this.clear}>Clear</button>
                     <button className="btn btn-primary" onClick={this.save}>Save</button>
                 </div>
-                <canvas id={this.state.canvasName} width={this.state.width} height={this.state.height} onMouseDown={this.canvasOnClick} onMouseUp={this.canvasOnUp} onMouseMove={this.canvasOnMove} onMouseLeave={this.canvasOnLeave}></canvas>
+                <canvas id={this.state.canvasName} width="1500rem" height="750rem" onMouseDown={this.canvasOnClick} onMouseUp={this.canvasOnUp} onMouseMove={this.canvasOnMove} onMouseLeave={this.canvasOnLeave}></canvas>
             </div>
         );
     }
