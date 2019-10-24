@@ -11,10 +11,20 @@ const terrain = {
     BLANK : '#FFFFFF',
     GRASS : '#0C8F00',
     STONE : '#7A7A7A',
-    SAND : '#d1cb92',
-    DIRT: '#4d4924',
+    SAND : '#D1CB92',
+    DIRT: '#4D4924',
     WATER : '#1897F2',
-    LAVA : '#ffb300'
+    LAVA : '#FFB300'
+}
+
+function componentToHex(c) {
+    var hex = c.toString(16);
+    return hex.length == 1 ? "0" + hex : hex;
+}
+
+function rgbToHex(r, g, b) {
+    let output = "#" + componentToHex(r) + componentToHex(g) + componentToHex(b);
+    return output.toUpperCase();
 }
 
 class Canvas extends Component{
@@ -49,6 +59,7 @@ class Canvas extends Component{
         this.clear = this.clear.bind(this);
         this.undo = this.undo.bind(this);
         this.save = this.save.bind(this);
+        this.cleanUpAntialiasing = this.cleanUpAntialiasing.bind(this);
     }
 
     canvasOnClick(event){
@@ -80,6 +91,7 @@ class Canvas extends Component{
             case tool.FILL:
                 var imgData = this.context.getImageData(0, 0, this.canvas.width, this.canvas.height);
 
+                this.cleanUpAntialiasing(imgData);
                 var clickPos = (((event.pageY - this.canvas.offsetTop) * this.canvas.width) + (event.pageX - this.canvas.offsetLeft)) * 4;
                 this.fill(imgData, this.state.toolTerrain, imgData.data[clickPos], imgData.data[clickPos + 1], imgData.data[clickPos + 2], clickPos);
 
@@ -239,6 +251,7 @@ class Canvas extends Component{
                 case tool.FILL:
                     var imgData = this.context.getImageData(0, 0, this.canvas.width, this.canvas.height);
 
+                    this.cleanUpAntialiasing(imgData);
                     var clickPos = ((this.state.clicks[i].ypos * this.canvas.width) + this.state.clicks[i].xpos) * 4;
                     this.fill(imgData, this.state.clicks[i].terrain, imgData.data[clickPos], imgData.data[clickPos + 1], imgData.data[clickPos + 2], clickPos);
 
@@ -281,6 +294,35 @@ class Canvas extends Component{
     save(){
         var image = this.canvas.toDataURL("image/png").replace("image/png", "image/octet-stream");
         window.location.href=image;
+    }
+
+    cleanUpAntialiasing(imageData){
+        for(let y = 0; y < this.canvas.height; y++){
+            for(let x = 0; x < this.canvas.width; x++){
+                switch(rgbToHex(imageData.data[(y * this.canvas.width + x) * 4], imageData.data[(y * this.canvas.width + x) * 4 + 1], imageData.data[(y * this.canvas.width + x) * 4 + 2])){
+                    case terrain.BLANK:
+                    case terrain.GRASS:
+                    case terrain.STONE:
+                    case terrain.SAND:
+                    case terrain.DIRT:
+                    case terrain.WATER:
+                    case terrain.LAVA:
+                        break;
+
+                    default:
+                        if(x < this.canvas.width - 1){
+                            imageData.data[(y * this.canvas.width + x) * 4] = imageData.data[(y * this.canvas.width + x + 1) * 4];
+                            imageData.data[(y * this.canvas.width + x) * 4 + 1] = imageData.data[(y * this.canvas.width + x + 1) * 4 + 1];
+                            imageData.data[(y * this.canvas.width + x) * 4 + 2] = imageData.data[(y * this.canvas.width + x + 1) * 4 + 2];
+                        }
+                        else{
+                            imageData.data[(y * this.canvas.width + x) * 4] = imageData.data[(y * this.canvas.width + x - 1) * 4];
+                            imageData.data[(y * this.canvas.width + x) * 4 + 1] = imageData.data[(y * this.canvas.width + x - 1) * 4 + 1];
+                            imageData.data[(y * this.canvas.width + x) * 4 + 2] = imageData.data[(y * this.canvas.width + x - 1) * 4 + 2];
+                        }
+                }
+            }
+        }
     }
 
     render(){
