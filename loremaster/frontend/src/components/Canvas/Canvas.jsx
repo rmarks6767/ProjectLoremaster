@@ -27,6 +27,24 @@ function rgbToHex(r, g, b) {
     return output.toUpperCase();
 }
 
+function isTerrain(color){
+    switch(color){
+        case terrain.BLANK:
+        case terrain.GRASS:
+        case terrain.STONE:
+        case terrain.SAND:
+        case terrain.DIRT:
+        case terrain.WATER:
+        case terrain.LAVA:
+            return true;
+            break;
+
+        default:
+            return false;
+            break;
+    }
+}
+
 class Canvas extends Component{
     canvas = null;
     context = null;
@@ -299,27 +317,31 @@ class Canvas extends Component{
     cleanUpAntialiasing(imageData){
         for(let y = 0; y < this.canvas.height; y++){
             for(let x = 0; x < this.canvas.width; x++){
-                switch(rgbToHex(imageData.data[(y * this.canvas.width + x) * 4], imageData.data[(y * this.canvas.width + x) * 4 + 1], imageData.data[(y * this.canvas.width + x) * 4 + 2])){
-                    case terrain.BLANK:
-                    case terrain.GRASS:
-                    case terrain.STONE:
-                    case terrain.SAND:
-                    case terrain.DIRT:
-                    case terrain.WATER:
-                    case terrain.LAVA:
-                        break;
+                if(!isTerrain(rgbToHex(imageData.data[(y * this.canvas.width + x) * 4], imageData.data[(y * this.canvas.width + x) * 4 + 1], imageData.data[(y * this.canvas.width + x) * 4 + 2]))){
 
-                    default:
-                        if(x < this.canvas.width - 1){
-                            imageData.data[(y * this.canvas.width + x) * 4] = imageData.data[(y * this.canvas.width + x + 1) * 4];
-                            imageData.data[(y * this.canvas.width + x) * 4 + 1] = imageData.data[(y * this.canvas.width + x + 1) * 4 + 1];
-                            imageData.data[(y * this.canvas.width + x) * 4 + 2] = imageData.data[(y * this.canvas.width + x + 1) * 4 + 2];
-                        }
-                        else{
-                            imageData.data[(y * this.canvas.width + x) * 4] = imageData.data[(y * this.canvas.width + x - 1) * 4];
-                            imageData.data[(y * this.canvas.width + x) * 4 + 1] = imageData.data[(y * this.canvas.width + x - 1) * 4 + 1];
-                            imageData.data[(y * this.canvas.width + x) * 4 + 2] = imageData.data[(y * this.canvas.width + x - 1) * 4 + 2];
-                        }
+                    if(x < this.canvas.width - 1 && isTerrain(rgbToHex(imageData.data[(y * this.canvas.width + x + 1) * 4], imageData.data[(y * this.canvas.width + x + 1) * 4 + 1], imageData.data[(y * this.canvas.width + x + 1) * 4 + 2]))){
+                        imageData.data[(y * this.canvas.width + x) * 4] = imageData.data[(y * this.canvas.width + x + 1) * 4];
+                        imageData.data[(y * this.canvas.width + x) * 4 + 1] = imageData.data[(y * this.canvas.width + x + 1) * 4 + 1];
+                        imageData.data[(y * this.canvas.width + x) * 4 + 2] = imageData.data[(y * this.canvas.width + x + 1) * 4 + 2];
+                    }
+
+                    else if(x > 0 && isTerrain(rgbToHex(imageData.data[(y * this.canvas.width + x - 1) * 4], imageData.data[(y * this.canvas.width + x - 1) * 4 + 1], imageData.data[(y * this.canvas.width + x - 1) * 4 + 2]))){
+                        imageData.data[(y * this.canvas.width + x) * 4] = imageData.data[(y * this.canvas.width + x - 1) * 4];
+                        imageData.data[(y * this.canvas.width + x) * 4 + 1] = imageData.data[(y * this.canvas.width + x - 1) * 4 + 1];
+                        imageData.data[(y * this.canvas.width + x) * 4 + 2] = imageData.data[(y * this.canvas.width + x - 1) * 4 + 2];
+                    }
+
+                    else if(y < this.canvas.height - 1 && isTerrain(rgbToHex(imageData.data[((y + 1) * this.canvas.width + x) * 4], imageData.data[((y + 1) * this.canvas.width + x) * 4 + 1], imageData.data[((y + 1) * this.canvas.width + x) * 4 + 2]))){
+                        imageData.data[(y * this.canvas.width + x) * 4] = imageData.data[((y + 1) * this.canvas.width + x) * 4];
+                        imageData.data[(y * this.canvas.width + x) * 4 + 1] = imageData.data[((y + 1) * this.canvas.width + x) * 4 + 1];
+                        imageData.data[(y * this.canvas.width + x) * 4 + 2] = imageData.data[((y + 1) * this.canvas.width + x) * 4 + 2];
+                    }
+
+                    else{
+                        imageData.data[(y * this.canvas.width + x) * 4] = imageData.data[((y - 1) * this.canvas.width + x) * 4];
+                        imageData.data[(y * this.canvas.width + x) * 4 + 1] = imageData.data[((y - 1) * this.canvas.width + x) * 4 + 1];
+                        imageData.data[(y * this.canvas.width + x) * 4 + 2] = imageData.data[((y - 1) * this.canvas.width + x) * 4 + 2];
+                    }
                 }
             }
         }

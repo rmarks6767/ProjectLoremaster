@@ -4,7 +4,6 @@ import './App.css';
 import Navbar from '../Navbar/Navbar';
 import Content from '../Content/Content';
 import Footer from '../Footer/Footer';
-import NavbarNarrow from '../Navbar/NavbarNarrow';
 
 var currentLocation = 'landing';
 
@@ -13,8 +12,7 @@ class App extends Component {
     return (
       <div className="App">
         <Router>
-          <Navbar />>
-          <NavbarNarrow />
+          <Navbar />
           <Content />
           <Footer />
         </Router>
