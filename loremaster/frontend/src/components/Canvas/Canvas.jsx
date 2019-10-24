@@ -70,7 +70,7 @@ class Canvas extends Component{
                 this.context.lineJoin = "round";
                 this.context.lineWidth = this.state.toolSize;
 
-                this.context.moveTo(this.state.clicks[this.state.clicks.length - 1].xpos - 1, this.state.clicks[this.state.clicks.length - 1].ypos);
+                this.context.moveTo(this.state.clicks[this.state.clicks.length - 1].xpos - .5, this.state.clicks[this.state.clicks.length - 1].ypos);
 
                 this.context.lineTo(this.state.clicks[this.state.clicks.length - 1].xpos, this.state.clicks[this.state.clicks.length - 1].ypos);
                 this.context.closePath();
@@ -228,7 +228,7 @@ class Canvas extends Component{
                         this.context.moveTo(this.state.clicks[i].prev.xpos, this.state.clicks[i].prev.ypos);
                     }
                     else {
-                        this.context.moveTo(this.state.clicks[i].xpos - 1, this.state.clicks[i].ypos);
+                        this.context.moveTo(this.state.clicks[i].xpos - .5, this.state.clicks[i].ypos);
                     }
                     
                     this.context.lineTo(this.state.clicks[i].xpos, this.state.clicks[i].ypos);
@@ -312,6 +312,7 @@ class Canvas extends Component{
         this.context.fillStyle = terrain.BLANK;
         this.context.fillRect(0, 0, this.canvas.width, this.canvas.height);
         this.brushSize.oninput = () => {this.setToolSize(this.brushSize.value);};
+        this.context.imageSmoothingEnabled = false;
     }
 }
 
