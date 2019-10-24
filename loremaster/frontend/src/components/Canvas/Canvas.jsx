@@ -131,7 +131,7 @@ class Canvas extends Component{
         else {
             this.state.clicks.push({tool: toolMode, terrain: toolTerrain, size : toolSize, xpos : x, ypos : y, prev : -1});
         }
-    }
+    }z
 
     fill(imageData, terrain, red, green, blue, clickPos){
         var terrainRed = parseInt(terrain.substring(1, 3), 16);
