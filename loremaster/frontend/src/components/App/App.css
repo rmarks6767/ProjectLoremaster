@@ -62,13 +62,3 @@
 .Landing .container p{
   margin: 1em;
 }
-
-@media only screen and (max-width: 960px){
-  .Navbar{
-    display: none;
-  }
-
-  .NavbarNarrow{
-    display: initial;
-  }
-}
