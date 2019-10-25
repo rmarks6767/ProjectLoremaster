@@ -1,7 +1,7 @@
-var mysql = require('mysql');
+const mysql = require('mysql');
 
 module.exports = {
-    SQLCONNECT: function(){
+    SqlConnect: function(){
         var connection = mysql.createConnection({
             host: "localhost",
             database: "loremaster",

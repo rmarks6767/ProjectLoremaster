@@ -22,33 +22,33 @@
 
 
 module.exports = {
-    WHERE: function(ANDList) {
+    Where: function(ANDList) {
         const and = null;
         return new Promise((success) => {
             ANDList.forEach(AND => {
                 if (and){
-                    and = `(${and} AND ${this.AND(AND)})`;    
+                    and = `(${and} AND ${this.And(AND)})`;    
                 } else {
-                    and = this.AND(AND);
+                    and = this.And(AND);
                 }
             });
             return success(and);
         });
     },
-    AND: function(ORList) {
+    And: function(ORList) {
         const or = null; 
         return new Promise((success) => {
             ORList.forEach(OR => {
                 if (or){
-                    or = `(${or} OR ${this.OR(OR)})`;    
+                    or = `(${or} OR ${this.Or(OR)})`;    
                 } else {
-                    or = this.OR(OR);
+                    or = this.Or(OR);
                 }
             });
             return success(or);
         });
     },
-    OR: function(Filters) { 
+    Or: function(Filters) { 
         try {
             Filters.forEach(filter => {
                 switch(filter.Operation) {

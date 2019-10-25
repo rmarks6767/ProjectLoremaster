@@ -1,5 +1,6 @@
-var {GraphQLObjectType, GraphQLID, GraphQLNonNull,GraphQLInt} = require('graphql');
-var {TerrainEnum} = require('./enums/terrain_enum');
+const {GraphQLObjectType, GraphQLID, GraphQLNonNull,GraphQLInt} = require('graphql');
+const {TerrainEnum} = require('./enums/terrain_enum');
+
 const Tile = new GraphQLObjectType({
     name: "tile",
     description: "a tile object",

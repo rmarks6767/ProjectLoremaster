@@ -2,7 +2,7 @@ const { GraphQLInputObjectType, GraphQLString, GraphQLNonNull } = require('graph
 const { OperationEnum } = require('../../outputs/enums/operationEnum'); 
 
 const RequestFilterInput = new GraphQLInputObjectType({
-    name: "FILTER",
+    name: "Filter",
     description: "Used to choose an operation to query back different types of data",
     fields: {
         operation: { type: new GraphQLNonNull(OperationEnum) },

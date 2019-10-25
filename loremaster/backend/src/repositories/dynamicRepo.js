@@ -1,8 +1,8 @@
-const { SQLCONNECT } = require('../sql/SQLConnect');  
+const { SqlConnect } = require('../sql/SQLConnect');  
 
 module.exports = {
-    SELECT: function(table, expression = null){
-        const connection = SQLCONNECT();
+    Select: function(table, expression = null){
+        const connection = SqlConnect();
         return new Promise((success, failure) => {
             connection.query(`
             SELECT * FROM ${table}
@@ -20,8 +20,8 @@ module.exports = {
             connection.end();
         })
     },
-    INSERT: function(table, keys, values) {
-        const connection = SQLCONNECT();
+    Insert: function(table, keys, values) {
+        const connection = SqlConnect();
         return new Promise((success, failure) => {
             connection.query(`
             INSERT INTO ${table} 

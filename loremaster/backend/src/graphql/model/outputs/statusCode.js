@@ -1,4 +1,5 @@
-var { GraphQLObjectType, GraphQLString, GraphQLNonNull } = require('graphql');
+const { GraphQLObjectType, GraphQLString, GraphQLNonNull } = require('graphql');
+
 const StatusCode = new GraphQLObjectType({
     name: "statusCode",
     description: "status code graph type",

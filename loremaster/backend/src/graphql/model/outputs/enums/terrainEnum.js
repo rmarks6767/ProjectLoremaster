@@ -1,4 +1,5 @@
-var {GraphQLEnumType} = require('graphql');
+const {GraphQLEnumType} = require('graphql');
+
 const TerrainEnum = new GraphQLEnumType({
   name: "TerrainEnum",
   values: {
