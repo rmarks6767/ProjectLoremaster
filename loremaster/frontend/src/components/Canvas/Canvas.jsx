@@ -27,6 +27,39 @@ function rgbToHex(r, g, b) {
     return output.toUpperCase();
 }
 
+// function closestTerrain(color){
+//     var differenceArray = {};
+
+//     differenceArray[terrain.BLANK] = compareColors(terrain.BLANK, color);
+//     differenceArray[terrain.GRASS] = compareColors(terrain.GRASS, color);
+//     differenceArray[terrain.STONE] = compareColors(terrain.STONE, color);
+//     differenceArray[terrain.SAND] = compareColors(terrain.SAND, color);
+//     differenceArray[terrain.DIRT] = compareColors(terrain.DIRT, color);
+//     differenceArray[terrain.WATER] = compareColors(terrain.WATER, color);
+//     differenceArray[terrain.LAVA] = compareColors(terrain.LAVA, color);
+
+//     var lowestNum = Object.values(differenceArray).sort()[0];
+
+//     for(var key in differenceArray){
+//         if(differenceArray[key] === lowestNum){
+            
+//             return key;
+//         }
+//     }
+// }
+
+// function compareColors(colorOne, colorTwo){
+//     var redOne = parseInt(colorOne.substring(1, 3), 16);
+//     var greenOne = parseInt(colorOne.substring(3, 5), 16);
+//     var blueOne = parseInt(colorOne.substring(5, 7), 16);
+
+//     var redTwo = parseInt(colorTwo.substring(1, 3), 16);
+//     var greenTwo = parseInt(colorTwo.substring(3, 5), 16);
+//     var blueTwo = parseInt(colorTwo.substring(5, 7), 16);
+
+//     return Math.abs(redOne - redTwo) + Math.abs(greenOne - greenTwo) + Math.abs(blueOne - blueTwo);
+// }
+
 function isTerrain(color){
     switch(color){
         case terrain.BLANK:
@@ -343,6 +376,12 @@ class Canvas extends Component{
                         imageData.data[(y * this.canvas.width + x) * 4 + 2] = imageData.data[((y - 1) * this.canvas.width + x) * 4 + 2];
                     }
                 }
+
+                // var closest = closestTerrain(rgbToHex(imageData.data[(y * this.canvas.width + x) * 4], imageData.data[(y * this.canvas.width + x) * 4 + 1], imageData.data[(y * this.canvas.width + x) * 4 + 2]));
+
+                // imageData.data[(y * this.canvas.width + x) * 4] = parseInt(closest.substring(1, 3), 16);
+                // imageData.data[(y * this.canvas.width + x) * 4 + 1] = parseInt(closest.substring(3, 5), 16);
+                // imageData.data[(y * this.canvas.width + x) * 4 + 2] = parseInt(closest.substring(5, 7), 16);
             }
         }
     }
@@ -357,7 +396,7 @@ class Canvas extends Component{
                     <button className="btn btn-primary" onClick={() => {this.setTerrain(terrain.GRASS);}}>Grass</button>
                     <button className="btn btn-primary" onClick={() => {this.setTerrain(terrain.STONE);}}>Stone</button>
                     <button className="btn btn-primary" onClick={() => {this.setTerrain(terrain.WATER);}}>Water</button>
-                    <input type="range" min="1" max="25" defaultValue="5" class="slider" id="brush-size"/>
+                    <input type="range" min="10" max="30" defaultValue="10" class="slider" id="brush-size"/>
                     <button className="btn btn-primary" onClick={this.undo}>Undo</button>
                     <button className="btn btn-primary" onClick={this.refresh}>Refresh</button>
                     <button className="btn btn-primary" onClick={this.clear}>Clear</button>
