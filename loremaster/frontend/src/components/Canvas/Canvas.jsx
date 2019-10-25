@@ -27,26 +27,38 @@ function rgbToHex(r, g, b) {
     return output.toUpperCase();
 }
 
-function closestTerrain(color){
-    var differenceArray = {};
+// function closestTerrain(color){
+//     var differenceArray = {};
 
-    differenceArray[terrain.BLANK] = Math.abs(terrain.BLANK - color);
-    differenceArray[terrain.GRASS] = Math.abs(terrain.GRASS - color);
-    differenceArray[terrain.STONE] = Math.abs(terrain.STONE - color);
-    differenceArray[terrain.SAND] = Math.abs(terrain.SAND - color);
-    differenceArray[terrain.DIRT] = Math.abs(terrain.DIRT - color);
-    differenceArray[terrain.WATER] = Math.abs(terrain.WATER - color);
-    differenceArray[terrain.LAVA] = Math.abs(terrain.LAVA - color);
+//     differenceArray[terrain.BLANK] = compareColors(terrain.BLANK, color);
+//     differenceArray[terrain.GRASS] = compareColors(terrain.GRASS, color);
+//     differenceArray[terrain.STONE] = compareColors(terrain.STONE, color);
+//     differenceArray[terrain.SAND] = compareColors(terrain.SAND, color);
+//     differenceArray[terrain.DIRT] = compareColors(terrain.DIRT, color);
+//     differenceArray[terrain.WATER] = compareColors(terrain.WATER, color);
+//     differenceArray[terrain.LAVA] = compareColors(terrain.LAVA, color);
 
-    var lowestNum = Object.values(differenceArray).sort()[0];
+//     var lowestNum = Object.values(differenceArray).sort()[0];
 
-    for(var key in differenceArray){
-        if(differenceArray[key] === lowestNum){
+//     for(var key in differenceArray){
+//         if(differenceArray[key] === lowestNum){
             
-            return key;
-        }
-    }
-}
+//             return key;
+//         }
+//     }
+// }
+
+// function compareColors(colorOne, colorTwo){
+//     var redOne = parseInt(colorOne.substring(1, 3), 16);
+//     var greenOne = parseInt(colorOne.substring(3, 5), 16);
+//     var blueOne = parseInt(colorOne.substring(5, 7), 16);
+
+//     var redTwo = parseInt(colorTwo.substring(1, 3), 16);
+//     var greenTwo = parseInt(colorTwo.substring(3, 5), 16);
+//     var blueTwo = parseInt(colorTwo.substring(5, 7), 16);
+
+//     return Math.abs(redOne - redTwo) + Math.abs(greenOne - greenTwo) + Math.abs(blueOne - blueTwo);
+// }
 
 function isTerrain(color){
     switch(color){
@@ -338,38 +350,38 @@ class Canvas extends Component{
     cleanUpAntialiasing(imageData){
         for(let y = 0; y < this.canvas.height; y++){
             for(let x = 0; x < this.canvas.width; x++){
-                // if(!isTerrain(rgbToHex(imageData.data[(y * this.canvas.width + x) * 4], imageData.data[(y * this.canvas.width + x) * 4 + 1], imageData.data[(y * this.canvas.width + x) * 4 + 2]))){
+                if(!isTerrain(rgbToHex(imageData.data[(y * this.canvas.width + x) * 4], imageData.data[(y * this.canvas.width + x) * 4 + 1], imageData.data[(y * this.canvas.width + x) * 4 + 2]))){
 
-                //     if(x < this.canvas.width - 1 && isTerrain(rgbToHex(imageData.data[(y * this.canvas.width + x + 1) * 4], imageData.data[(y * this.canvas.width + x + 1) * 4 + 1], imageData.data[(y * this.canvas.width + x + 1) * 4 + 2]))){
-                //         imageData.data[(y * this.canvas.width + x) * 4] = imageData.data[(y * this.canvas.width + x + 1) * 4];
-                //         imageData.data[(y * this.canvas.width + x) * 4 + 1] = imageData.data[(y * this.canvas.width + x + 1) * 4 + 1];
-                //         imageData.data[(y * this.canvas.width + x) * 4 + 2] = imageData.data[(y * this.canvas.width + x + 1) * 4 + 2];
-                //     }
+                    if(x < this.canvas.width - 1 && isTerrain(rgbToHex(imageData.data[(y * this.canvas.width + x + 1) * 4], imageData.data[(y * this.canvas.width + x + 1) * 4 + 1], imageData.data[(y * this.canvas.width + x + 1) * 4 + 2]))){
+                        imageData.data[(y * this.canvas.width + x) * 4] = imageData.data[(y * this.canvas.width + x + 1) * 4];
+                        imageData.data[(y * this.canvas.width + x) * 4 + 1] = imageData.data[(y * this.canvas.width + x + 1) * 4 + 1];
+                        imageData.data[(y * this.canvas.width + x) * 4 + 2] = imageData.data[(y * this.canvas.width + x + 1) * 4 + 2];
+                    }
 
-                //     else if(x > 0 && isTerrain(rgbToHex(imageData.data[(y * this.canvas.width + x - 1) * 4], imageData.data[(y * this.canvas.width + x - 1) * 4 + 1], imageData.data[(y * this.canvas.width + x - 1) * 4 + 2]))){
-                //         imageData.data[(y * this.canvas.width + x) * 4] = imageData.data[(y * this.canvas.width + x - 1) * 4];
-                //         imageData.data[(y * this.canvas.width + x) * 4 + 1] = imageData.data[(y * this.canvas.width + x - 1) * 4 + 1];
-                //         imageData.data[(y * this.canvas.width + x) * 4 + 2] = imageData.data[(y * this.canvas.width + x - 1) * 4 + 2];
-                //     }
+                    else if(x > 0 && isTerrain(rgbToHex(imageData.data[(y * this.canvas.width + x - 1) * 4], imageData.data[(y * this.canvas.width + x - 1) * 4 + 1], imageData.data[(y * this.canvas.width + x - 1) * 4 + 2]))){
+                        imageData.data[(y * this.canvas.width + x) * 4] = imageData.data[(y * this.canvas.width + x - 1) * 4];
+                        imageData.data[(y * this.canvas.width + x) * 4 + 1] = imageData.data[(y * this.canvas.width + x - 1) * 4 + 1];
+                        imageData.data[(y * this.canvas.width + x) * 4 + 2] = imageData.data[(y * this.canvas.width + x - 1) * 4 + 2];
+                    }
 
-                //     else if(y < this.canvas.height - 1 && isTerrain(rgbToHex(imageData.data[((y + 1) * this.canvas.width + x) * 4], imageData.data[((y + 1) * this.canvas.width + x) * 4 + 1], imageData.data[((y + 1) * this.canvas.width + x) * 4 + 2]))){
-                //         imageData.data[(y * this.canvas.width + x) * 4] = imageData.data[((y + 1) * this.canvas.width + x) * 4];
-                //         imageData.data[(y * this.canvas.width + x) * 4 + 1] = imageData.data[((y + 1) * this.canvas.width + x) * 4 + 1];
-                //         imageData.data[(y * this.canvas.width + x) * 4 + 2] = imageData.data[((y + 1) * this.canvas.width + x) * 4 + 2];
-                //     }
+                    else if(y < this.canvas.height - 1 && isTerrain(rgbToHex(imageData.data[((y + 1) * this.canvas.width + x) * 4], imageData.data[((y + 1) * this.canvas.width + x) * 4 + 1], imageData.data[((y + 1) * this.canvas.width + x) * 4 + 2]))){
+                        imageData.data[(y * this.canvas.width + x) * 4] = imageData.data[((y + 1) * this.canvas.width + x) * 4];
+                        imageData.data[(y * this.canvas.width + x) * 4 + 1] = imageData.data[((y + 1) * this.canvas.width + x) * 4 + 1];
+                        imageData.data[(y * this.canvas.width + x) * 4 + 2] = imageData.data[((y + 1) * this.canvas.width + x) * 4 + 2];
+                    }
 
-                //     else{
-                //         imageData.data[(y * this.canvas.width + x) * 4] = imageData.data[((y - 1) * this.canvas.width + x) * 4];
-                //         imageData.data[(y * this.canvas.width + x) * 4 + 1] = imageData.data[((y - 1) * this.canvas.width + x) * 4 + 1];
-                //         imageData.data[(y * this.canvas.width + x) * 4 + 2] = imageData.data[((y - 1) * this.canvas.width + x) * 4 + 2];
-                //     }
-                // }
+                    else{
+                        imageData.data[(y * this.canvas.width + x) * 4] = imageData.data[((y - 1) * this.canvas.width + x) * 4];
+                        imageData.data[(y * this.canvas.width + x) * 4 + 1] = imageData.data[((y - 1) * this.canvas.width + x) * 4 + 1];
+                        imageData.data[(y * this.canvas.width + x) * 4 + 2] = imageData.data[((y - 1) * this.canvas.width + x) * 4 + 2];
+                    }
+                }
 
-                var closest = closestTerrain(rgbToHex(imageData.data[(y * this.canvas.width + x) * 4], imageData.data[(y * this.canvas.width + x) * 4 + 1], imageData.data[(y * this.canvas.width + x) * 4 + 2]));
+                // var closest = closestTerrain(rgbToHex(imageData.data[(y * this.canvas.width + x) * 4], imageData.data[(y * this.canvas.width + x) * 4 + 1], imageData.data[(y * this.canvas.width + x) * 4 + 2]));
 
-                imageData.data[(y * this.canvas.width + x) * 4] = parseInt(closest.substring(1, 3), 16);
-                imageData.data[(y * this.canvas.width + x) * 4 + 1] = parseInt(closest.substring(3, 5), 16);
-                imageData.data[(y * this.canvas.width + x) * 4 + 2] = parseInt(closest.substring(5, 7), 16);
+                // imageData.data[(y * this.canvas.width + x) * 4] = parseInt(closest.substring(1, 3), 16);
+                // imageData.data[(y * this.canvas.width + x) * 4 + 1] = parseInt(closest.substring(3, 5), 16);
+                // imageData.data[(y * this.canvas.width + x) * 4 + 2] = parseInt(closest.substring(5, 7), 16);
             }
         }
     }
@@ -384,7 +396,7 @@ class Canvas extends Component{
                     <button className="btn btn-primary" onClick={() => {this.setTerrain(terrain.GRASS);}}>Grass</button>
                     <button className="btn btn-primary" onClick={() => {this.setTerrain(terrain.STONE);}}>Stone</button>
                     <button className="btn btn-primary" onClick={() => {this.setTerrain(terrain.WATER);}}>Water</button>
-                    <input type="range" min="1" max="25" defaultValue="5" class="slider" id="brush-size"/>
+                    <input type="range" min="10" max="30" defaultValue="10" class="slider" id="brush-size"/>
                     <button className="btn btn-primary" onClick={this.undo}>Undo</button>
                     <button className="btn btn-primary" onClick={this.refresh}>Refresh</button>
                     <button className="btn btn-primary" onClick={this.clear}>Clear</button>
