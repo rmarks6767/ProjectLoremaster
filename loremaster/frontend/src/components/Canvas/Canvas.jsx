@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import axios from 'axios';
+import FrontData from 'form-data';
 import './Canvas.css';
 
 const tool = {
@@ -94,7 +96,9 @@ class Canvas extends Component{
             canvasName : this.props.canvasName,
             toolMode : tool.BRUSH,
             toolTerrain : terrain.GRASS,
-            toolSize : 5
+            toolSize : 5,
+            styleWidth : 0,
+            styleHeight : 0
         };
 
         this.canvasOnClick = this.canvasOnClick.bind(this);
@@ -113,8 +117,9 @@ class Canvas extends Component{
         this.cleanUpAntialiasing = this.cleanUpAntialiasing.bind(this);
     }
 
-    canvasOnClick(event){
+    async canvasOnClick(event){
         this.addClick(event.pageX - this.canvas.offsetLeft, event.pageY - this.canvas.offsetTop, false, this.state.toolMode, this.state.toolTerrain, this.state.toolSize);
+
 
         switch(this.state.toolMode){
             case tool.BRUSH:
@@ -143,7 +148,10 @@ class Canvas extends Component{
                 var imgData = this.context.getImageData(0, 0, this.canvas.width, this.canvas.height);
 
                 this.cleanUpAntialiasing(imgData);
-                var clickPos = (((event.pageY - this.canvas.offsetTop) * this.canvas.width) + (event.pageX - this.canvas.offsetLeft)) * 4;
+                var clickPos = ((Math.floor(this.state.clicks[this.state.clicks.length - 1].ypos) * this.canvas.width) + Math.floor(this.state.clicks[this.state.clicks.length - 1].xpos)) * 4;
+                console.log("Length: " + imgData.data.length);
+                console.log("Click Pos:" + clickPos);
+                console.log(imgData.data.length - clickPos);
                 this.fill(imgData, this.state.toolTerrain, imgData.data[clickPos], imgData.data[clickPos + 1], imgData.data[clickPos + 2], clickPos);
 
                 this.context.putImageData(imgData, 0, 0);
@@ -189,12 +197,12 @@ class Canvas extends Component{
     
     addClick(x, y, drag, toolMode, toolTerrain, toolSize){
         if(drag) {
-            this.state.clicks.push({tool : toolMode, terrain: toolTerrain, size : toolSize, xpos : x, ypos : y, prev : this.state.clicks[this.state.clicks.length - 1]});
+            this.state.clicks.push({tool : toolMode, terrain: toolTerrain, size : toolSize, xpos : x * (this.canvas.width / this.state.styleWidth), ypos : y * (this.canvas.height / this.state.styleHeight), prev : this.state.clicks[this.state.clicks.length - 1]});
         }
         else {
-            this.state.clicks.push({tool: toolMode, terrain: toolTerrain, size : toolSize, xpos : x, ypos : y, prev : -1});
+            this.state.clicks.push({tool: toolMode, terrain: toolTerrain, size : toolSize, xpos :  x * (this.canvas.width / this.state.styleWidth), ypos : y * (this.canvas.height / this.state.styleHeight), prev : -1});
         }
-    }z
+    }
 
     fill(imageData, terrain, red, green, blue, clickPos){
         var terrainRed = parseInt(terrain.substring(1, 3), 16);
@@ -344,7 +352,27 @@ class Canvas extends Component{
 
     save(){
         var image = this.canvas.toDataURL("image/png").replace("image/png", "image/octet-stream");
-        window.location.href=image;
+        var a = document.createElement("a");
+        a.href = image;
+        a.download = "download.png"
+        a.click();
+
+        // axios({
+        //     method: 'post',
+        //     url: 'http://localhost:5000/api/chameleon/test',
+        //     headers: {
+        //         'Content-Type': 'application/x-www-form-urlencoded'
+        //     },
+        //     data: JSON.stringify("test"),
+        // })
+        //     .then(response => console.log(response.data));
+
+        // var req = new XMLHttpRequest();
+        // req.open('post', 'http://localhost:5000/api/chameleon/test', false);
+        // // req.setRequestHeader('Content-Type', 'application/x-ww-form-urlencoded');
+        // req.send("test");
+
+        // console.log(req.responseText);
     }
 
     cleanUpAntialiasing(imageData){
@@ -402,15 +430,23 @@ class Canvas extends Component{
                     <button className="btn btn-primary" onClick={this.clear}>Clear</button>
                     <button className="btn btn-primary" onClick={this.save}>Save</button>
                 </div>
-                <canvas id={this.state.canvasName} width="1500rem" height="750rem" onMouseDown={this.canvasOnClick} onMouseUp={this.canvasOnUp} onMouseMove={this.canvasOnMove} onMouseLeave={this.canvasOnLeave}></canvas>
+                <canvas id={this.state.canvasName} onMouseDown={this.canvasOnClick} onMouseUp={this.canvasOnUp} onMouseMove={this.canvasOnMove} onMouseLeave={this.canvasOnLeave}></canvas>
             </div>
         );
     }
 
     componentDidMount(){
-        this.canvas = document.getElementById(this.state.canvasName);
+        this.canvas = document.querySelector("#" + this.state.canvasName);
         this.context = this.canvas.getContext("2d");
-        this.brushSize = document.getElementById("brush-size");
+        this.brushSize = document.querySelector("#brush-size");
+
+        this.canvas.width = 1920;
+        this.canvas.height = 1080;
+        this.canvas.style.width = "1600px";
+        this.canvas.style.height = "900px";
+
+        this.state.styleWidth = parseInt(this.canvas.style.width, 10);
+        this.state.styleHeight = parseInt(this.canvas.style.height, 10);
 
         this.context.fillStyle = terrain.BLANK;
         this.context.fillRect(0, 0, this.canvas.width, this.canvas.height);
