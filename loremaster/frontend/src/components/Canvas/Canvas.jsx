@@ -6,7 +6,8 @@ import './Canvas.css';
 const tool = {
     BRUSH : 'brush',
     ERASE : 'erase',
-    FILL : 'fill'
+    FILL : 'fill',
+    SQUARE : 'square'
 }
 
 const terrain = {
@@ -28,39 +29,6 @@ function rgbToHex(r, g, b) {
     let output = "#" + componentToHex(r) + componentToHex(g) + componentToHex(b);
     return output.toUpperCase();
 }
-
-// function closestTerrain(color){
-//     var differenceArray = {};
-
-//     differenceArray[terrain.BLANK] = compareColors(terrain.BLANK, color);
-//     differenceArray[terrain.GRASS] = compareColors(terrain.GRASS, color);
-//     differenceArray[terrain.STONE] = compareColors(terrain.STONE, color);
-//     differenceArray[terrain.SAND] = compareColors(terrain.SAND, color);
-//     differenceArray[terrain.DIRT] = compareColors(terrain.DIRT, color);
-//     differenceArray[terrain.WATER] = compareColors(terrain.WATER, color);
-//     differenceArray[terrain.LAVA] = compareColors(terrain.LAVA, color);
-
-//     var lowestNum = Object.values(differenceArray).sort()[0];
-
-//     for(var key in differenceArray){
-//         if(differenceArray[key] === lowestNum){
-            
-//             return key;
-//         }
-//     }
-// }
-
-// function compareColors(colorOne, colorTwo){
-//     var redOne = parseInt(colorOne.substring(1, 3), 16);
-//     var greenOne = parseInt(colorOne.substring(3, 5), 16);
-//     var blueOne = parseInt(colorOne.substring(5, 7), 16);
-
-//     var redTwo = parseInt(colorTwo.substring(1, 3), 16);
-//     var greenTwo = parseInt(colorTwo.substring(3, 5), 16);
-//     var blueTwo = parseInt(colorTwo.substring(5, 7), 16);
-
-//     return Math.abs(redOne - redTwo) + Math.abs(greenOne - greenTwo) + Math.abs(blueOne - blueTwo);
-// }
 
 function isTerrain(color){
     switch(color){
@@ -89,16 +57,23 @@ class Canvas extends Component{
         super(props);
         this.state={
             isPainting : false,
+
             clicks : new Array(),
             prevClicks : new Array(),
+
             mapWidth : this.props.width,
             mapHeight : this.props.height,
+            styleWidth : 0,
+            styleHeight : 0,
             canvasName : this.props.canvasName,
+
             toolMode : tool.BRUSH,
             toolTerrain : terrain.GRASS,
             toolSize : 5,
-            styleWidth : 0,
-            styleHeight : 0
+
+            isDrawingSquare : false,
+            squarePos1 : {x: 0, y: 0},
+            squarePos2 : {x: 0, y: 0}
         };
 
         this.canvasOnClick = this.canvasOnClick.bind(this);
@@ -116,6 +91,8 @@ class Canvas extends Component{
         this.save = this.save.bind(this);
         this.cleanUpAntialiasing = this.cleanUpAntialiasing.bind(this);
     }
+
+    /* Canvas Event Functions */
 
     async canvasOnClick(event){
         this.addClick(event.pageX - this.canvas.offsetLeft, event.pageY - this.canvas.offsetTop, false, this.state.toolMode, this.state.toolTerrain, this.state.toolSize);
@@ -158,6 +135,12 @@ class Canvas extends Component{
 
                 break;
 
+            case tool.SQUARE:
+                this.state.isDrawingSquare = true;
+                this.state.squarePos1.x = this.state.clicks[this.state.clicks.length - 1].xpos;
+                this.state.squarePos1.y = this.state.clicks[this.state.clicks.length - 1].ypos;
+                break;
+
             default:
                 console.log("ERROR: Invalid tool used on canvas");
                 break;
@@ -187,8 +170,19 @@ class Canvas extends Component{
         }
     }
     
-    canvasOnUp(){
+    canvasOnUp(event){
         this.state.isPainting = false;
+
+        if(this.state.isDrawingSquare){
+            this.addClick(event.pageX - this.canvas.offsetLeft, event.pageY - this.canvas.offsetTop, false, this.state.toolMode, this.state.toolTerrain, this.state.toolSize);
+
+            this.state.squarePos2.x = this.state.clicks[this.state.clicks.length - 1].xpos;
+            this.state.squarePos2.y = this.state.clicks[this.state.clicks.length - 1].ypos;
+
+            this.square(this.state.squarePos1, this.state.squarePos2);
+
+            this.state.isDrawingSquare = false;
+        }
     }
     
     canvasOnLeave(){
@@ -203,6 +197,8 @@ class Canvas extends Component{
             this.state.clicks.push({tool: toolMode, terrain: toolTerrain, size : toolSize, xpos :  x * (this.canvas.width / this.state.styleWidth), ypos : y * (this.canvas.height / this.state.styleHeight), prev : -1});
         }
     }
+
+    /* Canvas Drawing Tools */
 
     fill(imageData, terrain, red, green, blue, clickPos){
         var terrainRed = parseInt(terrain.substring(1, 3), 16);
@@ -263,6 +259,31 @@ class Canvas extends Component{
         }
     }
 
+    square(pos1, pos2){
+        this.context.beginPath();
+
+        this.context.strokeStyle = this.state.toolTerrain;
+        this.context.lineJoin = "round";
+        this.context.lineWidth = this.state.toolSize;
+
+        this.context.moveTo(pos1.x, pos1.y);
+        this.context.lineTo(pos1.x, pos2.y);
+
+        this.context.moveTo(pos1.x, pos2.y);
+        this.context.lineTo(pos2.x, pos2.y);
+
+        this.context.moveTo(pos2.x, pos2.y);
+        this.context.lineTo(pos2.x, pos1.y);
+
+        this.context.moveTo(pos2.x, pos1.y);
+        this.context.lineTo(pos1.x, pos1.y);
+
+        this.context.closePath();
+        this.context.stroke();
+    }
+
+    /* Set Drawing Properties */
+
     setTool(tool){
         this.state.toolMode = tool;
     }
@@ -274,6 +295,8 @@ class Canvas extends Component{
     setToolSize(size){
         this.state.toolSize = size;
     }
+
+    /* Canvas Tools Misc */
 
     refresh(){
         this.context.clearRect(0,0,this.context.canvas.width,this.context.canvas.height);
@@ -317,6 +340,13 @@ class Canvas extends Component{
                     this.context.putImageData(imgData, 0, 0);
                     break;
 
+                case tool.SQUARE:
+                    let pos1 = {x: this.state.clicks[i].xpos, y: this.state.clicks[i].ypos};
+                    let pos2 = {x: this.state.clicks[i+1].xpos, y: this.state.clicks[i+1].ypos};
+                    this.square(pos1, pos2);
+                    i++;
+                    break;
+
                 default:
                     console.log("ERROR: Invalid tool used on canvas");
                     break;
@@ -351,12 +381,6 @@ class Canvas extends Component{
     }
 
     save(){
-        // var image = this.canvas.toDataURL("image/png").replace("image/png", "image/octet-stream");
-        // var a = document.createElement("a");
-        // a.href = image;
-        // a.download = "download.png"
-        // a.click();
-
         axios({
             method: 'post',
             url: 'http://localhost:5001/chameleon/test',
@@ -366,13 +390,6 @@ class Canvas extends Component{
             data: JSON.stringify("test"),
         })
             .then(response => console.log(response.data));
-
-        // var req = new XMLHttpRequest();
-        // req.open('post', 'http://localhost:5000/api/chameleon/test', false);
-        // // req.setRequestHeader('Content-Type', 'application/x-ww-form-urlencoded');
-        // req.send("test");
-
-        // console.log(req.responseText);
     }
 
     cleanUpAntialiasing(imageData){
@@ -404,12 +421,6 @@ class Canvas extends Component{
                         imageData.data[(y * this.canvas.width + x) * 4 + 2] = imageData.data[((y - 1) * this.canvas.width + x) * 4 + 2];
                     }
                 }
-
-                // var closest = closestTerrain(rgbToHex(imageData.data[(y * this.canvas.width + x) * 4], imageData.data[(y * this.canvas.width + x) * 4 + 1], imageData.data[(y * this.canvas.width + x) * 4 + 2]));
-
-                // imageData.data[(y * this.canvas.width + x) * 4] = parseInt(closest.substring(1, 3), 16);
-                // imageData.data[(y * this.canvas.width + x) * 4 + 1] = parseInt(closest.substring(3, 5), 16);
-                // imageData.data[(y * this.canvas.width + x) * 4 + 2] = parseInt(closest.substring(5, 7), 16);
             }
         }
     }
@@ -420,6 +431,7 @@ class Canvas extends Component{
                 <div className="editorBar" width="1000rem" height="75rem">
                     <button className="btn btn-primary" onClick={() => {this.setTool(tool.BRUSH);}}>Brush</button>
                     <button className="btn btn-primary" onClick={() => {this.setTool(tool.FILL);}}>Fill</button>
+                    <button className="btn btn-primary" onClick={() => {this.setTool(tool.SQUARE);}}>SQUARE</button>
                     <button className="btn btn-primary" onClick={() => {this.setTool(tool.ERASE);}}>Erase</button>
                     <button className="btn btn-primary" onClick={() => {this.setTerrain(terrain.GRASS);}}>Grass</button>
                     <button className="btn btn-primary" onClick={() => {this.setTerrain(terrain.STONE);}}>Stone</button>
