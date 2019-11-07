@@ -351,21 +351,21 @@ class Canvas extends Component{
     }
 
     save(){
-        var image = this.canvas.toDataURL("image/png").replace("image/png", "image/octet-stream");
-        var a = document.createElement("a");
-        a.href = image;
-        a.download = "download.png"
-        a.click();
+        // var image = this.canvas.toDataURL("image/png").replace("image/png", "image/octet-stream");
+        // var a = document.createElement("a");
+        // a.href = image;
+        // a.download = "download.png"
+        // a.click();
 
-        // axios({
-        //     method: 'post',
-        //     url: 'http://localhost:5000/api/chameleon/test',
-        //     headers: {
-        //         'Content-Type': 'application/x-www-form-urlencoded'
-        //     },
-        //     data: JSON.stringify("test"),
-        // })
-        //     .then(response => console.log(response.data));
+        axios({
+            method: 'post',
+            url: 'http://localhost:5001/chameleon/test',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            data: JSON.stringify("test"),
+        })
+            .then(response => console.log(response.data));
 
         // var req = new XMLHttpRequest();
         // req.open('post', 'http://localhost:5000/api/chameleon/test', false);
