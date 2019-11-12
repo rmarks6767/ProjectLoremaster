@@ -58,9 +58,6 @@ class Canvas extends Component{
         this.state={
             isPainting : false,
 
-            clicks : new Array(),
-            prevClicks : new Array(),
-
             mapWidth : this.props.width,
             mapHeight : this.props.height,
             styleWidth : 0,
@@ -71,52 +68,72 @@ class Canvas extends Component{
             toolTerrain : terrain.GRASS,
             toolSize : 5,
 
+            prevClick : {x: 0, y: 0},
+
             isDrawingSquare : false,
             squarePos1 : {x: 0, y: 0},
-            squarePos2 : {x: 0, y: 0}
+            squarePos2 : {x: 0, y: 0},
+
+            prevImageData : new Array(),
+            numOfSavedData : 5,
+            currentImageDataIndex : 0,
         };
 
         this.canvasOnClick = this.canvasOnClick.bind(this);
         this.canvasOnMove = this.canvasOnMove.bind(this);
         this.canvasOnUp = this.canvasOnUp.bind(this);
         this.canvasOnLeave = this.canvasOnLeave.bind(this);
-        this.addClick = this.addClick.bind(this);
+
         this.fill = this.fill.bind(this);
+        this.square = this.square.bind(this);
+        this.squareFill = this.squareFill.bind(this);
+
         this.setTool = this.setTool.bind(this);
         this.setTerrain = this.setTerrain.bind(this);
         this.setToolSize = this.setToolSize.bind(this);
-        this.refresh = this.refresh.bind(this);
+
+        this.addCurrentImageData = this.addCurrentImageData.bind(this);
+        this.setCurrentImageData = this.setCurrentImageData.bind(this);
         this.clear = this.clear.bind(this);
         this.undo = this.undo.bind(this);
+        this.redo = this.redo.bind(this);
         this.save = this.save.bind(this);
         this.cleanUpAntialiasing = this.cleanUpAntialiasing.bind(this);
     }
 
     /* Canvas Event Functions */
 
-    async canvasOnClick(event){
-        this.addClick(event.pageX - this.canvas.offsetLeft, event.pageY - this.canvas.offsetTop, false, this.state.toolMode, this.state.toolTerrain, this.state.toolSize);
+    canvasOnClick(event){
+        let x = (event.pageX - this.canvas.offsetLeft) * (this.canvas.width / this.state.styleWidth);
+        let y = (event.pageY - this.canvas.offsetTop) * (this.canvas.height / this.state.styleHeight);
+        let toolMode = this.state.toolMode;
+        let terrainStyle = this.state.toolTerrain;
+        let size = this.state.toolSize;
+
+        console.log(toolMode);
 
 
-        switch(this.state.toolMode){
+        switch(toolMode){
             case tool.BRUSH:
             case tool.ERASE:
                 this.state.isPainting = true;
+                this.state.prevClick.x = x;
+                this.state.prevClick.y = y;
 
                 this.context.beginPath();
 
-                if(this.state.toolMode == tool.BRUSH){
-                    this.context.strokeStyle = this.state.toolTerrain;
+                if(toolMode == tool.BRUSH){
+                    this.context.strokeStyle = terrainStyle;
                 }
                 else{
                     this.context.strokeStyle = terrain.BLANK;
                 }
                 this.context.lineJoin = "round";
-                this.context.lineWidth = this.state.toolSize;
+                this.context.lineWidth = size;
 
-                this.context.moveTo(this.state.clicks[this.state.clicks.length - 1].xpos - .5, this.state.clicks[this.state.clicks.length - 1].ypos);
+                this.context.moveTo(x - .5, y);
 
-                this.context.lineTo(this.state.clicks[this.state.clicks.length - 1].xpos, this.state.clicks[this.state.clicks.length - 1].ypos);
+                this.context.lineTo(x, y);
                 this.context.closePath();
                 this.context.stroke();
                 break;
@@ -125,7 +142,7 @@ class Canvas extends Component{
                 var imgData = this.context.getImageData(0, 0, this.canvas.width, this.canvas.height);
 
                 this.cleanUpAntialiasing(imgData);
-                var clickPos = ((Math.floor(this.state.clicks[this.state.clicks.length - 1].ypos) * this.canvas.width) + Math.floor(this.state.clicks[this.state.clicks.length - 1].xpos)) * 4;
+                var clickPos = ((Math.floor(y) * this.canvas.width) + Math.floor(x)) * 4;
                 console.log("Length: " + imgData.data.length);
                 console.log("Click Pos:" + clickPos);
                 console.log(imgData.data.length - clickPos);
@@ -137,36 +154,45 @@ class Canvas extends Component{
 
             case tool.SQUARE:
                 this.state.isDrawingSquare = true;
-                this.state.squarePos1.x = this.state.clicks[this.state.clicks.length - 1].xpos;
-                this.state.squarePos1.y = this.state.clicks[this.state.clicks.length - 1].ypos;
+                this.state.squarePos1.x = x;
+                this.state.squarePos1.y = y;
                 break;
 
             default:
                 console.log("ERROR: Invalid tool used on canvas");
                 break;
         }
+
+        
     }
     
     canvasOnMove(event){
         if(this.state.isPainting && (this.state.toolMode == tool.BRUSH || this.state.toolMode == tool.ERASE)) {
-            this.addClick(event.pageX - this.canvas.offsetLeft, event.pageY - this.canvas.offsetTop, true, this.state.toolMode, this.state.toolTerrain, this.state.toolSize);
+            let x = (event.pageX - this.canvas.offsetLeft) * (this.canvas.width / this.state.styleWidth);
+            let y = (event.pageY - this.canvas.offsetTop) * (this.canvas.height / this.state.styleHeight);
+            let tool = this.state.toolMode;
+            let terrain = this.state.toolTerrain;
+            let size = this.state.toolSize;
 
             this.context.beginPath();
 
             if(this.state.toolMode == tool.BRUSH){
-                this.context.strokeStyle = this.state.toolTerrain;
+                this.context.strokeStyle = terrain;
             }
             else{
                 this.context.strokeStyle = terrain.BLANK;
             }
             this.context.lineJoin = "round";
-            this.context.lineWidth = this.state.toolSize;
+            this.context.lineWidth = size;
 
-            this.context.moveTo(this.state.clicks[this.state.clicks.length - 2].xpos, this.state.clicks[this.state.clicks.length - 2].ypos);
+            this.context.moveTo(this.state.prevClick.x, this.state.prevClick.y);
 
-            this.context.lineTo(this.state.clicks[this.state.clicks.length - 1].xpos, this.state.clicks[this.state.clicks.length - 1].ypos);
+            this.context.lineTo(x, y);
             this.context.closePath();
             this.context.stroke();
+
+            this.state.prevClick.x = x;
+            this.state.prevClick.y = y;
         }
     }
     
@@ -174,28 +200,28 @@ class Canvas extends Component{
         this.state.isPainting = false;
 
         if(this.state.isDrawingSquare){
-            this.addClick(event.pageX - this.canvas.offsetLeft, event.pageY - this.canvas.offsetTop, false, this.state.toolMode, this.state.toolTerrain, this.state.toolSize);
+            let x = (event.pageX - this.canvas.offsetLeft) * (this.canvas.width / this.state.styleWidth);
+            let y = (event.pageY - this.canvas.offsetTop) * (this.canvas.height / this.state.styleHeight);
+            let terrain = this.state.toolTerrain;
+            let size = this.state.toolSize;
 
-            this.state.squarePos2.x = this.state.clicks[this.state.clicks.length - 1].xpos;
-            this.state.squarePos2.y = this.state.clicks[this.state.clicks.length - 1].ypos;
+            this.state.squarePos2.x = x;
+            this.state.squarePos2.y = y;
 
-            this.square(this.state.squarePos1, this.state.squarePos2);
+            this.square(this.state.squarePos1, this.state.squarePos2, terrain, size);
 
             this.state.isDrawingSquare = false;
         }
+
+        this.addCurrentImageData();
     }
     
     canvasOnLeave(){
+        if(this.state.isPainting){
+            this.addCurrentImageData();
+        }
+        
         this.state.isPainting = false;
-    }
-    
-    addClick(x, y, drag, toolMode, toolTerrain, toolSize){
-        if(drag) {
-            this.state.clicks.push({tool : toolMode, terrain: toolTerrain, size : toolSize, xpos : x * (this.canvas.width / this.state.styleWidth), ypos : y * (this.canvas.height / this.state.styleHeight), prev : this.state.clicks[this.state.clicks.length - 1]});
-        }
-        else {
-            this.state.clicks.push({tool: toolMode, terrain: toolTerrain, size : toolSize, xpos :  x * (this.canvas.width / this.state.styleWidth), ypos : y * (this.canvas.height / this.state.styleHeight), prev : -1});
-        }
     }
 
     /* Canvas Drawing Tools */
@@ -259,10 +285,34 @@ class Canvas extends Component{
         }
     }
 
-    square(pos1, pos2){
+    square(pos1, pos2, terrain, size){
+        this.context.beginPath();
+
+        this.context.strokeStyle = terrain;
+        this.context.lineJoin = "round";
+        this.context.lineWidth = size;
+
+        this.context.moveTo(pos1.x, pos1.y);
+        this.context.lineTo(pos1.x, pos2.y);
+
+        this.context.moveTo(pos1.x, pos2.y);
+        this.context.lineTo(pos2.x, pos2.y);
+
+        this.context.moveTo(pos2.x, pos2.y);
+        this.context.lineTo(pos2.x, pos1.y);
+
+        this.context.moveTo(pos2.x, pos1.y);
+        this.context.lineTo(pos1.x, pos1.y);
+
+        this.context.closePath();
+        this.context.stroke();
+    }
+
+    squareFill(pos1, pos2, terrain){
         this.context.beginPath();
 
         this.context.strokeStyle = this.state.toolTerrain;
+        this.context.fillStyle = this.state.toolTerrain;
         this.context.lineJoin = "round";
         this.context.lineWidth = this.state.toolSize;
 
@@ -280,6 +330,7 @@ class Canvas extends Component{
 
         this.context.closePath();
         this.context.stroke();
+        this.context.fill();
     }
 
     /* Set Drawing Properties */
@@ -298,85 +349,42 @@ class Canvas extends Component{
 
     /* Canvas Tools Misc */
 
-    refresh(){
-        this.context.clearRect(0,0,this.context.canvas.width,this.context.canvas.height);
-        this.context.fillStyle = terrain.BLANK;
-        this.context.fillRect(0, 0, this.canvas.width, this.canvas.height);
-
-        for(var i = 0; i < this.state.clicks.length; i++) {
-
-            switch(this.state.clicks[i].tool){
-                case tool.BRUSH:
-                case tool.ERASE:
-                    this.context.beginPath();
-                    if(this.state.clicks[i].tool == tool.BRUSH){
-                        this.context.strokeStyle = this.state.clicks[i].terrain;
-                    }
-                    else{
-                        this.context.strokeStyle = terrain.BLANK;
-                    }
-                    this.context.lineJoin = "round";
-                    this.context.lineWidth = this.state.clicks[i].size;
-
-                    if(this.state.clicks[i].prev != -1) {
-                        this.context.moveTo(this.state.clicks[i].prev.xpos, this.state.clicks[i].prev.ypos);
-                    }
-                    else {
-                        this.context.moveTo(this.state.clicks[i].xpos - .5, this.state.clicks[i].ypos);
-                    }
-                    
-                    this.context.lineTo(this.state.clicks[i].xpos, this.state.clicks[i].ypos);
-                    this.context.closePath();
-                    this.context.stroke();
-                    break;
-
-                case tool.FILL:
-                    var imgData = this.context.getImageData(0, 0, this.canvas.width, this.canvas.height);
-
-                    this.cleanUpAntialiasing(imgData);
-                    var clickPos = ((this.state.clicks[i].ypos * this.canvas.width) + this.state.clicks[i].xpos) * 4;
-                    this.fill(imgData, this.state.clicks[i].terrain, imgData.data[clickPos], imgData.data[clickPos + 1], imgData.data[clickPos + 2], clickPos);
-
-                    this.context.putImageData(imgData, 0, 0);
-                    break;
-
-                case tool.SQUARE:
-                    let pos1 = {x: this.state.clicks[i].xpos, y: this.state.clicks[i].ypos};
-                    let pos2 = {x: this.state.clicks[i+1].xpos, y: this.state.clicks[i+1].ypos};
-                    this.square(pos1, pos2);
-                    i++;
-                    break;
-
-                default:
-                    console.log("ERROR: Invalid tool used on canvas");
-                    break;
-            }
-            
+    addCurrentImageData(){
+        if(this.state.currentImageDataIndex != this.state.prevImageData.length - 1){
+            this.state.prevImageData.splice(this.state.currentImageDataIndex + 1);
         }
+
+        this.state.prevImageData.push(this.context.getImageData(0, 0, this.canvas.width, this.canvas.height));
+
+        if(this.state.prevImageData.length > this.state.numOfSavedData){
+            this.state.prevImageData.shift();
+        }
+
+        this.state.currentImageDataIndex = this.state.prevImageData.length - 1;
+    }
+
+    setCurrentImageData(imageData){
+        this.context.putImageData(imageData, 0, 0);
     }
 
     clear(){
         this.context.clearRect(0,0,this.context.canvas.width,this.context.canvas.height);
         this.context.fillStyle = terrain.BLANK;
         this.context.fillRect(0, 0, this.canvas.width, this.canvas.height);
-        this.state.prevClicks = this.state.clicks.slice(0);
-        this.state.clicks = new Array();
+        this.addCurrentImageData();
     }
 
     undo(){
-        if(this.state.clicks.length > 0){
-            while(this.state.clicks[this.state.clicks.length - 1].prev != -1)
-            {
-                this.state.clicks.pop();
-                this.refresh();
-            }
-            this.state.clicks.pop();
-            this.refresh();
+        if(this.state.currentImageDataIndex > 0){
+            this.state.currentImageDataIndex--;
+            this.setCurrentImageData(this.state.prevImageData[this.state.currentImageDataIndex]);
         }
-        else if(this.state.prevClicks.length > 0){
-            this.state.clicks = this.state.prevClicks.slice(0);
-            this.state.prevClicks = new Array();
-            this.refresh();
+    }
+
+    redo(){
+        if(this.state.currentImageDataIndex < this.state.prevImageData.length - 1){
+            this.state.currentImageDataIndex++;
+            this.setCurrentImageData(this.state.prevImageData[this.state.currentImageDataIndex]);
         }
     }
 
@@ -438,7 +446,7 @@ class Canvas extends Component{
                     <button className="btn btn-primary" onClick={() => {this.setTerrain(terrain.WATER);}}>Water</button>
                     <input type="range" min="10" max="30" defaultValue="10" class="slider" id="brush-size"/>
                     <button className="btn btn-primary" onClick={this.undo}>Undo</button>
-                    <button className="btn btn-primary" onClick={this.refresh}>Refresh</button>
+                    <button className="btn btn-primary" onClick={this.redo}>Redo</button>
                     <button className="btn btn-primary" onClick={this.clear}>Clear</button>
                     <button className="btn btn-primary" onClick={this.save}>Save</button>
                 </div>
@@ -464,6 +472,8 @@ class Canvas extends Component{
         this.context.fillRect(0, 0, this.canvas.width, this.canvas.height);
         this.brushSize.oninput = () => {this.setToolSize(this.brushSize.value);};
         this.context.imageSmoothingEnabled = false;
+
+        this.addCurrentImageData();
     }
 }
 

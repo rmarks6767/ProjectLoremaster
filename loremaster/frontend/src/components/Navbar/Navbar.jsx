@@ -66,7 +66,7 @@ class Navbar extends Component{
         return(
             <div className="Navbar">
 
-                <nav className="navbar navbar-expand-lg bg-light navbar-light">
+                <nav className="navbar navbar-expand-lg bg-palette-dark">
                     <a className="navbar-brand">Project Loremaster</a>
 
                     <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
