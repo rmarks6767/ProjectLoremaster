@@ -3,9 +3,9 @@ const mysql = require('mysql');
 module.exports = {
     SqlConnect: function(){
         var connection = mysql.createConnection({
-            host: "localhost",
-            database: "loremaster",
-            user: "root",
+            host: process.env.HOST,
+            database: process.env.DATABASE,
+            user: process.env.USER,
             password: process.env.SQLPASSWORD
         })
         connection.connect(function(error){
