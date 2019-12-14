@@ -9,24 +9,19 @@ class Navbar extends Component{
     constructor(props){
         super(props);
         this.state = {
-            navItems : document.getElementsByClassName("nav-link"),
+            navItems : '',
         };
         this.setLinkActive = this.setLinkActive.bind(this);
         this.setLinkActiveSwitch = this.setLinkActiveSwitch.bind(this);
     }
 
     setLinkActive(){
-        if(this.state.navItems == null){
-            this.state.navItems = document.getElementsByClassName("nav-link");
-        }
-        else{
-            setTimeout( this.setLinkActiveSwitch, 10);
-        }
+        setTimeout( this.setLinkActiveSwitch, 10);
     }
 
     setLinkActiveSwitch(){
         switch(window.location.pathname){
-            case "/home":
+            case "/":
                 for(var i = 0; i < this.state.navItems.length; i++){
                     this.state.navItems[i].className = "nav-link";
                 }
@@ -71,7 +66,7 @@ class Navbar extends Component{
         return(
             <div className="Navbar">
 
-                <nav className="navbar navbar-expand-lg bg-light navbar-light">
+                <nav className="navbar navbar-expand-lg bg-palette-dark">
                     <a className="navbar-brand">Project Loremaster</a>
 
                     <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -80,7 +75,7 @@ class Navbar extends Component{
 
                     <div className="collapse navbar-collapse" id="navbar">
                         <ul className="navbar-nav nav-tabs">
-                            <li className="nav-item"><Link className="nav-link" to="/home" onClick={this.setLinkActive}>Home</Link></li>
+                            <li className="nav-item"><Link className="nav-link" to="" onClick={this.setLinkActive}>Home</Link></li>
                             <li className="nav-item"><Link className="nav-link" to="/characters" onClick={this.setLinkActive}>Characters</Link></li>
                             <li className="nav-item"><Link className="nav-link" to="/maps" onClick={this.setLinkActive}>Maps</Link></li>
                             <li className="nav-item"><Link className="nav-link" to="/campaigns" onClick={this.setLinkActive}>Campaigns</Link></li>
@@ -95,6 +90,7 @@ class Navbar extends Component{
     }
 
     componentDidMount(){
+        this.state.navItems = document.querySelectorAll('.nav-link');
         this.setLinkActive();
     }
 }
