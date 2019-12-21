@@ -9,6 +9,7 @@
   "author": "Headass House TM",
   "license": "MIT",
   "dependencies": {
+    "bcrypt": "^3.0.7",
     "express": "^4.17.1",
     "express-graphql": "^0.9.0",
     "graphql": "^14.5.4",
