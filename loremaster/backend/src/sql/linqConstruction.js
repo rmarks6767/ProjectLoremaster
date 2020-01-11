@@ -21,55 +21,63 @@
 
 
 
-module.exports = {
-    Where: function(ANDList) {
-        const and = null;
-        return new Promise((success) => {
-            ANDList.forEach(AND => {
-                if (and){
-                    and = `(${and} AND ${this.And(AND)})`;    
-                } else {
-                    and = this.And(AND);
-                }
-            });
-            return success(and);
+function Or(Filters) { 
+    try {
+        Filters.forEach(filter => {
+            console.log(filter);
+            console.log(filter.Operation);
+            switch(filter.Operation) {
+                case 0: // EQUALS operation
+                    return `${filter.property}="${filter.value}"`;
+                case 1: // CONTAINS operation
+                    return `${filter.property} LIKE ("${filter.vallue}")`;
+                case 2: // LT operation
+                    return `${filter.property}<${Number(filter.value)}`;                    
+                case 3: // LTE operation
+                    return `${filter.property}<=${Number(filter.value)}`;                                        
+                case 4: // GT operation
+                    return `${filter.property}>${Number(filter.value)}`;                                                    
+                case 5: // GTE operation
+                    return `${filter.property}>=${Number(filter.value)}`;                                                    
+            }
         });
-    },
-    And: function(ORList) {
-        const or = null; 
-        return new Promise((success) => {
-            ORList.forEach(OR => {
-                if (or){
-                    or = `(${or} OR ${this.Or(OR)})`;    
-                } else {
-                    or = this.Or(OR);
-                }
-            });
-            return success(or);
-        });
-    },
-    Or: function(Filters) { 
-        try {
-            Filters.forEach(filter => {
-                switch(filter.Operation) {
-                    case 0: // EQUALS operation
-                        return `${filter.property}="${filter.value}"`;
-                    case 1: // CONTAINS operation
-                        return `${filter.property} LIKE ("${filter.vallue}")`;
-                    case 2: // LT operation
-                        return `${filter.property}<${Number(filter.value)}`;                    
-                    case 3: // LTE operation
-                        return `${filter.property}<=${Number(filter.value)}`;                                        
-                    case 4: // GT operation
-                        return `${filter.property}>${Number(filter.value)}`;                                                    
-                    case 5: // GTE operation
-                        return `${filter.property}>=${Number(filter.value)}`;                                                    
-                }
-            });
-        }
-        catch {
-            throw new Error("Data type could not be properly compared!")
-        }
-        
     }
+    catch {
+        console.log("Whoops");
+        throw new Error("Data type could not be properly compared!")
+    }
+    
+}
+function And(ORList) {
+    console.log(ANDList["or"]);
+    const or = null; 
+    return new Promise((success) => {
+        ORList["or"].forEach(OR => {
+            if (or){
+                or = `(${or} OR ${Or(OR)})`;    
+            } else {
+                or = Or(OR);
+            }
+        });
+        return success(or);
+    });
+}
+function Where(ANDList) {
+    console.log(ANDList["and"]);
+    const and = null;
+    return new Promise((success) => {
+        ANDList["and"].forEach(AND => {
+            if (and){
+                and = `(${and} AND ${And(AND)})`;    
+            } else {
+                and = And(AND);
+            }
+        });
+        console.log(and);
+        return success(and);
+    });
+}
+    
+module.exports = {
+    Where
 }

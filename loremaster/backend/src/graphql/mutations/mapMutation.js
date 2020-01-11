@@ -38,7 +38,7 @@ const createMap = {
             
             return resp;
         } else {
-            throw new Error("Must provide a map input!");
+            return new Error("Must provide a map input!");
         }
     }
 }

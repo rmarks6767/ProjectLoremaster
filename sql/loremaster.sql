@@ -20,7 +20,7 @@ CREATE TABLE IF NOT EXISTS accounts (
   userName char(36) NOT NULL,
   name char(36) NOT NULL,
   email char(36) NOT NULL,
-  passwordHash char(256) NOT NULL, 
+  passwordHash char(255) NOT NULL, 
   PRIMARY KEY (userName)
 );
 
