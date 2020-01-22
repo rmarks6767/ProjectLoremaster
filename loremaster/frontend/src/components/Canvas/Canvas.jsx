@@ -20,6 +20,13 @@ const terrain = {
     LAVA : '#FFB300'
 }
 
+let terrainValues = Object.values(terrain);
+let terrainString = "";
+
+for(let i = 0; i < terrainValues.length; i++){
+    terrainString += terrainValues[i];
+}
+
 const terrainRGB = {
     BLANK : {r:255,g:255,b:255},
     GRASS : {r:12,g:143,b:0},
@@ -41,25 +48,7 @@ function rgbToHex(r, g, b) {
 }
 
 function isTerrain(color, terrain='#'){
-    switch(color){
-        case terrain:
-            return false;
-            break;
-
-        case terrain.BLANK:
-        case terrain.GRASS:
-        case terrain.STONE:
-        case terrain.SAND:
-        case terrain.DIRT:
-        case terrain.WATER:
-        case terrain.LAVA:
-            return true;
-            break;
-
-        default:
-            return false;
-            break;
-    }
+    return (terrainString.includes(color) && color != terrain);
 }
 
 class Canvas extends Component{
@@ -239,16 +228,36 @@ class Canvas extends Component{
 
     fill(imageData, terrain, red, green, blue, pos){
         console.log(pos)
-        if((pos >= 0 && pos < imageData.data.length) && ((red === imageData.data[pos] && green === imageData.data[pos + 1] && blue === imageData.data[pos + 2]) || !isTerrain(rgbToHex(imageData.data[pos], imageData.data[pos + 1], imageData.data[pos + 2]), rgbToHex(red, green, blue)))){
-            imageData.data[pos] = terrain.r;
-            imageData.data[pos + 1] = terrain.g;
-            imageData.data[pos + 2] = terrain.b;
-            imageData.data[pos + 3] = 255;
+        let targetColor = rgbToHex(red, green, blue);
+        if(terrain.r === red && terrain.g === green && terrain.b === blue){
+            return;
+        }
 
-            this.fill(imageData, terrain, red, green, blue, pos + ((this.canvas.width * 4) - (pos % (this.canvas.width * 4))));
-            this.fill(imageData, terrain, red, green, blue, pos - 4);
-            this.fill(imageData, terrain, red, green, blue, pos - (pos % (this.canvas.width * 4)));
-            this.fill(imageData, terrain, red, green, blue, pos + 4);
+        let queue = [];
+        queue.push(pos);
+
+        while(queue.length > 0){
+            let qPos = queue.shift();
+
+            if(qPos < 0 || qPos >= imageData.data.length){
+                continue;
+            }
+
+            if((imageData.data[qPos] == terrain.r && imageData.data[qPos + 1] == terrain.g && imageData.data[qPos + 2] == terrain.b) ||
+             (!(imageData.data[qPos] == red && imageData.data[qPos + 1] == green && imageData.data[qPos + 2] == blue) && isTerrain(rgbToHex(imageData.data[qPos], imageData.data[qPos + 1], imageData.data[qPos + 2])))){
+                continue;
+            }
+            else{
+                imageData.data[qPos] = terrain.r;
+                imageData.data[qPos + 1] = terrain.g;
+                imageData.data[qPos + 2] = terrain.b;
+                imageData.data[qPos + 3] = 255;
+
+                queue.push(qPos + ((this.canvas.width * 4) - (qPos % (this.canvas.width * 4))));
+                queue.push(qPos - 4);
+                queue.push(qPos - (qPos % (this.canvas.width * 4)));
+                queue.push(qPos + 4);
+            }
         }
     }
 
@@ -394,10 +403,10 @@ class Canvas extends Component{
         this.context = this.canvas.getContext("2d");
         this.brushSize = document.querySelector("#brush-size");
 
-        this.canvas.width = 1920;
-        this.canvas.height = 1080;
-        this.canvas.style.width = "1600px";
-        this.canvas.style.height = "900px";
+        this.canvas.width = 600;
+        this.canvas.height = 400;
+        this.canvas.style.width = "600px";
+        this.canvas.style.height = "400px";
 
         this.state.styleWidth = parseInt(this.canvas.style.width, 10);
         this.state.styleHeight = parseInt(this.canvas.style.height, 10);
