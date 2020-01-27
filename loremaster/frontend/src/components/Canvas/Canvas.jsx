@@ -138,6 +138,7 @@ class Canvas extends Component{
                 this.context.lineTo(x, y);
                 this.context.closePath();
                 this.context.stroke();
+
                 break;
 
             case tool.FILL:
@@ -227,8 +228,6 @@ class Canvas extends Component{
     /* Canvas Drawing Tools */
 
     fill(imageData, terrain, red, green, blue, pos){
-        console.log(pos)
-        let targetColor = rgbToHex(red, green, blue);
         if(terrain.r === red && terrain.g === green && terrain.b === blue){
             return;
         }
@@ -253,9 +252,9 @@ class Canvas extends Component{
                 imageData.data[qPos + 2] = terrain.b;
                 imageData.data[qPos + 3] = 255;
 
-                queue.push(qPos + ((this.canvas.width * 4) - (qPos % (this.canvas.width * 4))));
+                queue.push(qPos + (this.canvas.width * 4));
                 queue.push(qPos - 4);
-                queue.push(qPos - (qPos % (this.canvas.width * 4)));
+                queue.push(qPos - (this.canvas.width * 4));
                 queue.push(qPos + 4);
             }
         }
@@ -270,14 +269,8 @@ class Canvas extends Component{
 
         this.context.moveTo(pos1.x, pos1.y);
         this.context.lineTo(pos1.x, pos2.y);
-
-        this.context.moveTo(pos1.x, pos2.y);
         this.context.lineTo(pos2.x, pos2.y);
-
-        this.context.moveTo(pos2.x, pos2.y);
         this.context.lineTo(pos2.x, pos1.y);
-
-        this.context.moveTo(pos2.x, pos1.y);
         this.context.lineTo(pos1.x, pos1.y);
 
         this.context.closePath();
