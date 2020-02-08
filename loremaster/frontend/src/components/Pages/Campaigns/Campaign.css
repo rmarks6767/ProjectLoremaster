@@ -1,0 +1,20 @@
+.maps-container {
+    width: 30rem;
+    margin: 5rem;
+    height: 30rem;
+    background-color:#e9ecef;
+}
+
+.monsters-container {
+    width: 30rem;
+    margin: 5rem;
+    height: 30rem;
+    background-color: #e9ecef; 
+}
+
+.characters-container {
+    width: 30rem;
+    margin: 5rem;
+    height: 30rem;
+    background-color: #e9ecef; 
+}
