@@ -1,7 +1,7 @@
 import { strict } from "assert";
 
 class Character {
-    constructor(name, race, dndclass, str, dex, con, int, wis, cha, xp, maxHP, speed){
+    constructor(name, race, dndclass, str, dex, con, int, wis, cha, xp, maxHP, speed, weapons){
         this.name = name;
         this.race = race;
         this.dndclass = dndclass;
@@ -29,6 +29,8 @@ class Character {
         this.level = this.getLevel(this.xp);
         this.skills = [];
         this.populateSkills();
+        this.weapons = weapons;
+        console.log(weapons);
     }
 
     generateModDict(){
