@@ -1,7 +1,7 @@
 import { strict } from "assert";
 
 class Character {
-    constructor(name, race, dndclass, str, dex, con, int, wis, cha, xp){
+    constructor(name, race, dndclass, str, dex, con, int, wis, cha, xp, maxHP, speed){
         this.name = name;
         this.race = race;
         this.dndclass = dndclass;
@@ -11,12 +11,24 @@ class Character {
         this.int = int;
         this.wis = wis;
         this.cha = cha;
-        this.xp = xp;
         this.modDict = [];
         this.generateModDict();
+        this.strMod = this.getMod(this.str);
+        this.dexMod = this.getMod(this.dex);
+        this.conMod = this.getMod(this.con);
+        this.intMod = this.getMod(this.int);
+        this.wisMod = this.getMod(this.wis);
+        this.chaMod = this.getMod(this.cha);
+        this.xp = xp;
+        this.maxHP = maxHP;
+        this.hp = maxHP;
+        this.speed = speed;
+        this.armorClass = 10 + this.dexMod;
         this.levelList = [];
         this.generateLvlList();
         this.level = this.getLevel(this.xp);
+        this.skills = [];
+        this.populateSkills();
     }
 
     generateModDict(){
@@ -59,6 +71,81 @@ class Character {
         this.levelList.push(265000);
         this.levelList.push(305000);
         this.levelList.push(365000);
+    }
+
+    populateSkills(){
+        this.skills.push({
+            key: "Acrobatics",
+            value: this.dexMod
+        });
+        this.skills.push({
+            key: "Animal Handling",
+            value: this.wisMod
+        });
+        this.skills.push({
+            key: "Arcana",
+            value: this.intMod
+        });
+        this.skills.push({
+            key: "Athletics",
+            value: this.strMod
+        });
+        this.skills.push({
+            key: "Deception",
+            value: this.chaMod
+        });
+        this.skills.push({
+            key: "History",
+            value: this.intMod
+        });
+        this.skills.push({
+            key: "Insight",
+            value: this.wisMod
+        });
+        this.skills.push({
+            key: "Intimidation",
+            value: this.chaMod
+        });
+        this.skills.push({
+            key: "Investigation",
+            value: this.intMod
+        });
+        this.skills.push({
+            key: "Medicine",
+            value: this.wisMod
+        });
+        this.skills.push({
+            key: "Nature",
+            value: this.intMod
+        });
+        this.skills.push({
+            key: "Perception",
+            value: this.wisMod
+        });
+        this.skills.push({
+            key: "Performance",
+            value: this.chaMod
+        });
+        this.skills.push({
+            key: "Persuasion",
+            value: this.chaMod
+        });
+        this.skills.push({
+            key: "Religion",
+            value: this.intMod
+        });
+        this.skills.push({
+            key: "Sleight of Hand",
+            value: this.dexMod
+        });
+        this.skills.push({
+            key: "Stealth",
+            value: this.dexMod
+        });
+        this.skills.push({
+            key: "Survival",
+            value: this.wisMod
+        });
     }
 
     getLevel(xp){
