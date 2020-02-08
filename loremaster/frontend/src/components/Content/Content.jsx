@@ -7,6 +7,7 @@ import Compendium from '../Pages/Compendium/Compendium';
 import Campaigns from '../Pages/Campaigns/Campaigns';
 import CharDisplay from '../CharacterCreation/CharDisplay';
 import CharEdit from '../CharacterCreation/CharEdit';
+import Character from '../CharacterCreation/Character';
 
 class Content extends Component{
 
@@ -14,7 +15,7 @@ class Content extends Component{
         return(
             <div className="Content">
                 <Switch>
-                    <Route path="/characters/charexists" render={() => (<CharDisplay />)}/>
+                    <Route path="/characters/charexists" render={() => (<CharDisplay character={new Character("Joe", "Dwarf", "Barbarian", 18, 15, 22, 3, 3, 10, 10500)}/>)}/>
                     <Route path="/characters/charedit" render={() => (<CharEdit />)}/>
                     <Route path="/characters" render={() => (<Characters />)}/>
                     <Route path="/maps" render={() => (<Maps />)}/>
