@@ -26,18 +26,19 @@ module.exports = {
             connection.query(`
             INSERT INTO ${table} 
             (${keys.join()}) VALUES ("${values.join(`","`)}")`, 
-            function(error, result) {
+            function(error) {
                 if (error) {
-                    console.log(error)
+                    console.log(error);
                     return failure({
                         code: "400", 
                         message: error.message
                     });
+                } else {
+                    return success({
+                        code: 200, 
+                        message: "Successfully inserted data!"
+                    });
                 }
-                return success({
-                    code: 200, 
-                    message: "Successfully inserted data!"
-                });
             });
             connection.end();
         })

@@ -1,4 +1,4 @@
-const { MapInput } = require('../model/inputs/mapInput');
+const { MapInput } = require('../model/inputs/map/mapInput');
 const { StatusCode } = require('../model/outputs/statusCode')
 const { GraphQLNonNull } = require('graphql'); 
 const { Insert } = require('../../repositories/dynamicRepo');
@@ -15,28 +15,45 @@ const createMap = {
     },
     resolve: async (source, args, root, ast) => {
         if (args.map) {
-            _ = Object.keys(args.map).pop()
-            const tilesValues = Object.values(args.map).pop()
-            const mapId = GenerateUuid()
-
-            const resp = await Insert(
-                "maps", 
-                ["id", "name","imageLink"],
-                [mapId, args.map["name"], args.map["imageLink"]]);
+            // Get the tiles from the object
+            const tiles = args.map["tiles"];
+            const mapId = GenerateUuid();
             
-            await tilesValues.forEach(async element => {
-                element["id"] = GenerateUuid()
-                element["mapId"] = mapId
-                const tileResp = await Insert(
-                    "tiles",
-                    Object.keys(element),
-                    Object.values(element));
-                if (tileResp["code"] != "200"){
-                    resp = tileResp;
-                }
+            delete args.map.tiles;
+
+            args.map["id"] = mapId;
+            
+            const mapResp = await Insert(
+                "maps", 
+                Object.keys(args.map),
+                Object.values(args.map)
+            ).catch((error) =>{
+                throw error;
+            }).then((result) => {
+                return result;
             });
             
-            return resp;
+            await tiles.forEach(async tile => {
+                tile["id"] = GenerateUuid()
+                tile["mapId"] = mapId
+                await Insert(
+                    "tiles",
+                    Object.keys(tile),
+                    Object.values(tile)
+                ).catch((error) =>{
+                    return error;
+                }).then((result) => {
+                    return result;
+                });
+            });
+
+
+            if (mapResp.code == 200) {
+                return mapResp;
+            }
+            else {
+                return new Error("Error entering the map into the db!");
+            }
         } else {
             return new Error("Must provide a map input!");
         }

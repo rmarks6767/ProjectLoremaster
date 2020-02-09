@@ -14,6 +14,7 @@ const map = new GraphQLObjectType({
                 description: "a tile object",
                 fields: () => ({
                     id: { type: new GraphQLNonNull(GraphQLID) },
+                    mapId: { type: new GraphQLNonNull(GraphQLID) },
                     height: { type: new GraphQLNonNull(GraphQLInt) },
                     width: { type: new GraphQLNonNull(GraphQLInt) },
                     x: { type: new GraphQLNonNull(GraphQLInt) },
