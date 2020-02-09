@@ -1,0 +1,34 @@
+.MapEditor{
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+}
+
+#me-editor{
+    background-color: burlywood;
+}
+
+#me-map{
+    position: relative;
+}
+
+#me-grid-map{
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    grid-template-rows: repeat(1, 1fr);
+    color: white;
+    width: 100%;
+    height: 100%;
+}
+
+#me-current-map{
+    background-size: cover;
+    width: 100%;
+    height: 100%;
+}
+
+.GridElement{
+    font-size: 60%;
+}

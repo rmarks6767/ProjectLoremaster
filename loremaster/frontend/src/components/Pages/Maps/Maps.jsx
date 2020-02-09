@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import Canvas from '../../Canvas/Canvas';
+import MapEditor from '../../MapEditor/MapEditor';
 
 class Maps extends Component{
     render(){
@@ -8,7 +9,7 @@ class Maps extends Component{
                 <div className="jumbotron text-center">
                     <h1>Maps</h1>
                 </div>
-                <Canvas canvasName="map"/>
+                <MapEditor/>
             </div>
         );
     }
