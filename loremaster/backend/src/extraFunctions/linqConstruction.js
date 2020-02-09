@@ -19,8 +19,6 @@
 // This translates to SELECT * FROM maps WHERE id="kjd8ddf9isd93k3-d-3-d3e3ed3-3dds" OR id="zsdsdsdsdsdcksj-d-3-d3e3ed3-3dds"
 // The WHERE clause is built by the following functions
 
-
-
 function Or(filter) { 
     try {
         switch(filter["operation"]) {
@@ -43,6 +41,7 @@ function Or(filter) {
     }
     
 }
+
 function And(ORList) {
     let or = null; 
     ORList["or"].forEach(OR => {
@@ -54,6 +53,7 @@ function And(ORList) {
     });
     return or;
 }
+
 function Where(ANDList) {
     let and = null;
     ANDList["and"].forEach(AND => {
@@ -63,6 +63,7 @@ function Where(ANDList) {
             and = And(AND);
         }
     });
+    // Print the actual command that is generated
     console.log(and);
     return and;
 }
