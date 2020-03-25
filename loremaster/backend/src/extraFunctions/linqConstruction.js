@@ -46,7 +46,7 @@ function And(ORList) {
     let or = null; 
     ORList["or"].forEach(OR => {
         if (or){
-            or = `${or} OR ${Or(OR)}`;    
+            or = `(${or} OR ${Or(OR)})`;    
         } else {
             or = Or(OR);
         }
@@ -58,7 +58,7 @@ function Where(ANDList) {
     let and = null;
     ANDList["and"].forEach(AND => {
         if (and){
-            and = `${and} AND ${And(AND)}`;    
+            and = `(${and} AND ${And(AND)})`;    
         } else {
             and = And(AND);
         }
