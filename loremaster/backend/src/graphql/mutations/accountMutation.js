@@ -1,5 +1,4 @@
 const { GraphQLNonNull } = require('graphql');
-const { Insert } = require('../../repositories/dynamicRepo');
 const { StatusCode } = require('../model/outputs/statusCode')
 const { AccountInput } = require('../model/inputs/account/accountInput');
 

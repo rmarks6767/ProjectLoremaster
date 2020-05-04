@@ -63,7 +63,7 @@ function Where(ANDList) {
             and = And(AND);
         }
     });
-    // Print the actual command that is generated
+    // Print the actual command that is generated ONLY WITH --verbose
     console.log(and);
     return and;
 }

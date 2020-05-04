@@ -2,7 +2,7 @@ const { MapInput } = require('../model/inputs/map/mapInput');
 const { StatusCode } = require('../model/outputs/statusCode')
 const { GraphQLNonNull } = require('graphql'); 
 const { Insert } = require('../../repositories/dynamicRepo');
-const { GenerateUuid } = require('../../extraFunctions/generateUUID');  
+const { GenerateId } = require('../../extraFunctions/generateId');  
 
 const createMap = {
     type: StatusCode,
@@ -17,7 +17,7 @@ const createMap = {
         if (args.map) {
             // Get the tiles from the object
             const tiles = args.map["tiles"];
-            const mapId = GenerateUuid();
+            const mapId = GenerateId();
             
             delete args.map.tiles;
 
