@@ -1,13 +1,13 @@
-const { AndInput } = require('../../model/inputs/matrixWheres/and');
-const { map } = require('../../model/outputs/map');
+const And = require('../where/and');
+const mapGraph = require('./model/mapGraph');
+const Map = require('./map')
 const { GraphQLString, GraphQLList } = require('graphql'); 
-const Map = require('../../../repositories/map')
 
 module.exports = {
-    mapQuery: {
+    getMap: {
         name: "map",
         description: "a map",
-        type: new GraphQLList(map),
+        type: new GraphQLList( mapGraph ),
         args: {
             id: {
                 name: 'id',
@@ -15,9 +15,9 @@ module.exports = {
             },
             where: {
                 name: 'where',
-                type: AndInput
+                type: And
             }
         },
-        resolve: Map.GetMap.bind(Map)
+        resolve: Map.GetMap.bind( Map )
     }
 }

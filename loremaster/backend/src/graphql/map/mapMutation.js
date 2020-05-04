@@ -1,7 +1,7 @@
-const { MapInput } = require('../model/inputs/map/mapInput');
-const { StatusCode } = require('../model/outputs/statusCode')
+const mapInput = require('./model/mapInput');
+const StatusCode = require('../statusCode/statusCode')
+const Map = require('./map');
 const { GraphQLNonNull } = require('graphql'); 
-const Map = require('../../repositories/map');
 
 module.exports = {
     createMap: {
@@ -10,7 +10,7 @@ module.exports = {
         args: {
             map:{
                 name:'map',
-                type: new GraphQLNonNull(MapInput),
+                type: new GraphQLNonNull(mapInput),
             }
         },
         resolve: Map.CreateMap.bind(Map)

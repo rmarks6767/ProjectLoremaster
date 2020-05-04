@@ -1,6 +1,6 @@
 const { GraphQLInputObjectType, GraphQLString, GraphQLNonNull } = require('graphql');
 
-const FriendInput = new GraphQLInputObjectType({
+const friendInput = new GraphQLInputObjectType({
     name: "friendInput",
     fields: {
         userName: { type: new GraphQLNonNull(GraphQLString) },
@@ -8,6 +8,4 @@ const FriendInput = new GraphQLInputObjectType({
     }
 })
 
-module.exports = {
-    FriendInput
-}
+module.exports = friendInput

@@ -1,28 +1,32 @@
-const { GraphQLNonNull } = require('graphql');
-const { StatusCode } = require('../model/outputs/statusCode')
-const { AccountInput } = require('../model/inputs/account/accountInput');
+const { Insert, Select } = require('../../sql/sqlFunctions');
 
-const createAccount = {
-    type: StatusCode,
-    description: 'an account',
-    args: {
-        account:{
-            name:'account',
-            type: new GraphQLNonNull(AccountInput),
+class Account {
+    // ( source, args.{ username, password, where } )
+    static async GetAccountWhere( _, { username, password, where } ){
+        if (args.userName && args.passwordHash){
+                
         }
-    },
-    resolve: async (source, args, root, ast) => {
-        if (args.account) {
+        else if (args.where){
+
+        }
+        else {
+
+        }
+    }
+
+    // ( source, args.{ account } )
+    static async CreateAccount ( _, { account } ) {
+        if (account) {
             // Get the friends 
-            const friends = args.account["friends"];
+            const friends = account["friends"];
 
             // Remove the key from the other object
-            delete args.account.friends;
+            delete account.friends;
             
             const accountResp = await Insert(
                 "accounts",
-                Object.keys(args.account),
-                Object.values(args.account)
+                Object.keys(account),
+                Object.values(account)
             ).catch((error) =>{
                 return error;
             }).then((result) => {
@@ -55,6 +59,4 @@ const createAccount = {
     }
 }
 
-module.exports = {
-    createAccount
-}
+module.exports = Account

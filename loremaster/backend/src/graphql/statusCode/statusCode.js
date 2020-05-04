@@ -9,6 +9,4 @@ const StatusCode = new GraphQLObjectType({
     }
 })
 
-module.exports = {
-    StatusCode
-}
+module.exports = StatusCode

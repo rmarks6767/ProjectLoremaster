@@ -1,6 +1,6 @@
 const { GraphQLObjectType, GraphQLNonNull, GraphQLString } = require('graphql');
 
-const friend = new GraphQLObjectType({
+const friendGraph = new GraphQLObjectType({
     name: "friend",
     description: "A friend on a given account",
     fields: () => ({
@@ -9,6 +9,4 @@ const friend = new GraphQLObjectType({
     })
 });
 
-module.exports = {
-    friend
-}
+module.exports = friendGraph

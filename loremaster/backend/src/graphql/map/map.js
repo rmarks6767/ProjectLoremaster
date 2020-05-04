@@ -1,6 +1,6 @@
-const { Insert, Select } = require('../sql/sqlFunctions');
-const { GenerateId } = require('../extraFunctions/generateId');  
-const { Where } = require('../extraFunctions/linqConstruction');
+const { Insert, Select } = require('../../sql/sqlFunctions');
+const { GenerateId } = require('../../extraFunctions/generateId');  
+const { Where } = require('../../extraFunctions/linqConstruction');
 
 class Map {
     // ( source, args.{ map } )
