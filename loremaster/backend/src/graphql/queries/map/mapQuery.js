@@ -1,7 +1,6 @@
 const { AndInput } = require('../../model/inputs/matrixWheres/and');
 const { map } = require('../../model/outputs/map');
 const { GraphQLString, GraphQLList } = require('graphql'); 
-const { Select } = require('../../../repositories/dynamicRepo');
 const { Where } = require('../../../extraFunctions/linqConstruction');
 
 const mapQuery = {
