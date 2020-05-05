@@ -191,7 +191,7 @@ To make querying easier, the where clause is avaiable in the following queries:
 - ```map```
 ## Where Structure
 The structure that the following would interpret would look something like this:
-```json
+```
 {
     "where": {
         "and": [{
