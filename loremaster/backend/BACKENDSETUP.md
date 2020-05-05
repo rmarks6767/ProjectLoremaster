@@ -16,18 +16,18 @@ This calls the start script, which is defined as: ```node src/index.js```. The s
 THESE WILL BE POPULATED AS WE GO THROUGH AND CREATE THEM
 
 # Things to Do:
-
-- [x] Define Schema for map and tiles
-- [x] Design Backend MySQL DB for map and tiles
-- [ ] Define querying fucntionality
-- [ ] Create generation for unique uuids for every element in the db
-- [ ] Query tiles successfully
-- [ ] Query maps successfully
-- [ ] Create Tiles successfully
-- [ ] Create Map successfully
+## Map things
+- [x] Define querying fucntionality
+- [x] Create generation for unique uuids for every element in the db
+- [x] Query  Map successfully
+- [x] Create Map successfully
 - [ ] Update Map successfully
-- [ ] Update Tiles successfully
-- [ ] Delete Tiles successfully
 - [ ] Delete Map successfully
 - [ ] Subscription for map updates
+
+## Account things
+- [x] Query  Account successfully
+- [x] Create Account successfully
+- [ ] Update Account successfully
+- [ ] Delete Account successfully
 

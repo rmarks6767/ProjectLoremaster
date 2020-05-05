@@ -8,7 +8,6 @@ const accountGraph = new GraphQLObjectType({
         userName: { type: new GraphQLNonNull(GraphQLString) },
         name: { type: new GraphQLNonNull(GraphQLString) },
         email: { type: new GraphQLNonNull(GraphQLString) },
-        passwordHash: { type: new GraphQLNonNull(GraphQLString) },
         friends: { type: new GraphQLList(friendGraph)}
     })
 });

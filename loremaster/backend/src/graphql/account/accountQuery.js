@@ -1,7 +1,7 @@
 const Account = require('./account');
 const accountGraph = require('./model/accountGraph');
 const And = require('../where/and')
-const { GraphQLList, GraphQLString } = require('graphql'); 
+const { GraphQLList, GraphQLString, GraphQLNonNull } = require('graphql'); 
 
 module.exports = {
     getAccount: {
@@ -11,17 +11,13 @@ module.exports = {
         args: {
             userName: {
                 name: 'userName',
-                type: GraphQLString
+                type: new GraphQLNonNull(GraphQLString)
             },
-            passwordHash: {
-                name: 'passwordHash',
-                type: GraphQLString
-            },
-            where: {
-                name: 'where',
-                type: And
+            password: {
+                name: 'password',
+                type: new GraphQLNonNull(GraphQLString)
             }
         },
-        resolve: Account.GetAccountWhere.bind(Account)
+        resolve: Account.GetAccount.bind(Account)
     }
 }
