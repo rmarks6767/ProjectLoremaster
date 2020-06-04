@@ -1,7 +1,7 @@
 # This will be the gitignore for the DND Table Project
 
 ##################### NodeJs
-
+package-lock.json
 # Logs
 logs
 *.log

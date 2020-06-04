@@ -1,12 +1,15 @@
 const { GraphQLSchema, GraphQLObjectType } = require('graphql');
-const { mapQuery } = require('./queries/map/mapQuery');
-const { createMap } = require('./mutations/mapMutation');
+const { getMap } = require('./map/mapQuery');
+const { createMap } = require('./map/mapMutation');
+const { getAccount } = require('./account/accountQuery');
+const { createAccount } = require('./account/accountMutation');
 
 const RootQuery = new GraphQLObjectType({
     name: 'rootQuery',
     description: 'The topmost query',
     fields: () => ({
-        map: mapQuery
+        map: getMap,
+        account: getAccount
     })
 });
 
@@ -14,7 +17,8 @@ const RootMutation = new GraphQLObjectType({
     name: 'rootMutation',
     description: 'The topmost mutation',
     fields: () => ({
-        createMap: createMap
+        createMap: createMap,
+        createAccount: createAccount
     })
 });
 

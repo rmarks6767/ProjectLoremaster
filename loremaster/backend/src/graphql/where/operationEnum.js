@@ -12,6 +12,4 @@ const OperationEnum = new GraphQLEnumType({
   }  
 })
 
-module.exports = {
-  OperationEnum
-}
+module.exports = OperationEnum

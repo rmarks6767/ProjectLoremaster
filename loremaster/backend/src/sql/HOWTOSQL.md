@@ -25,7 +25,7 @@ mysql> exit;
 
 Now go to the /sql folder and run the following:
 ```
-$ mysql -u root -p loremaster > loremaster.sql
+$ mysql -u root -p loremaster < loremaster.sql
 password: {Enter the password that was set above for the root here}
 ```
 
