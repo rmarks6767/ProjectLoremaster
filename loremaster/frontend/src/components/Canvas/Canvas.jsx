@@ -15,9 +15,26 @@ const terrain = {
     GRASS : '#0C8F00',
     STONE : '#7A7A7A',
     SAND : '#D1CB92',
-    DIRT: '#4D4924',
+    DIRT : '#4D4924',
     WATER : '#1897F2',
     LAVA : '#FFB300'
+}
+
+let terrainValues = Object.values(terrain);
+let terrainString = "";
+
+for(let i = 0; i < terrainValues.length; i++){
+    terrainString += terrainValues[i];
+}
+
+const terrainRGB = {
+    BLANK : {r:255,g:255,b:255},
+    GRASS : {r:12,g:143,b:0},
+    STONE : {r:122,g:122,b:122},
+    SAND : {r:209,g:203,b:146},
+    DIRT : {r:77,g:73,b:36},
+    WATER : {r:24,g:151,b:242},
+    LAVA : {r:255,g:179,b:0}
 }
 
 function componentToHex(c) {
@@ -30,22 +47,8 @@ function rgbToHex(r, g, b) {
     return output.toUpperCase();
 }
 
-function isTerrain(color){
-    switch(color){
-        case terrain.BLANK:
-        case terrain.GRASS:
-        case terrain.STONE:
-        case terrain.SAND:
-        case terrain.DIRT:
-        case terrain.WATER:
-        case terrain.LAVA:
-            return true;
-            break;
-
-        default:
-            return false;
-            break;
-    }
+function isTerrain(color, terrain='#'){
+    return (terrainString.includes(color) && color != terrain);
 }
 
 class Canvas extends Component{
@@ -98,7 +101,6 @@ class Canvas extends Component{
         this.undo = this.undo.bind(this);
         this.redo = this.redo.bind(this);
         this.save = this.save.bind(this);
-        this.cleanUpAntialiasing = this.cleanUpAntialiasing.bind(this);
     }
 
     /* Canvas Event Functions */
@@ -136,17 +138,16 @@ class Canvas extends Component{
                 this.context.lineTo(x, y);
                 this.context.closePath();
                 this.context.stroke();
+
                 break;
 
             case tool.FILL:
                 let imgData = this.context.getImageData(0, 0, this.canvas.width, this.canvas.height);
 
-                // this.cleanUpAntialiasing(imgData);
                 let clickPos = ((Math.floor(y) * this.canvas.width) + Math.floor(x)) * 4;
-                console.log("Length: " + imgData.data.length);
-                console.log("Click Pos:" + clickPos);
-                console.log(imgData.data.length - clickPos);
-                this.fill(imgData, this.state.toolTerrain, imgData.data[clickPos], imgData.data[clickPos + 1], imgData.data[clickPos + 2], clickPos);
+
+                let ter = terrainRGB[Object.keys(terrain).find(key => terrain[key] === this.state.toolTerrain)];
+                this.fill(imgData, ter, imgData.data[clickPos], imgData.data[clickPos + 1], imgData.data[clickPos + 2], clickPos);
 
                 this.context.putImageData(imgData, 0, 0);
 
@@ -226,65 +227,35 @@ class Canvas extends Component{
 
     /* Canvas Drawing Tools */
 
-    fill(imageData, terrain, red, green, blue, clickPos){
-        let terrainRed = parseInt(terrain.substring(1, 3), 16);
-        let terrainGreen = parseInt(terrain.substring(3, 5), 16);
-        let terrainBlue = parseInt(terrain.substring(5, 7), 16);
-        let lowerPos, lowerBound, higherPos, higherBound;
-        let pixelStack = new Array();
-        pixelStack.push(clickPos);
+    fill(imageData, terrain, red, green, blue, pos){
+        if(terrain.r === red && terrain.g === green && terrain.b === blue){
+            return;
+        }
 
-        let colorOffset = 20;
+        let queue = [];
+        queue.push(pos);
 
-        for(let i = 0; i < pixelStack.length; i++){
-            let pos = pixelStack[i];
-            if(!(red == terrainRed && green == terrainGreen && blue == terrainBlue)){
-                lowerPos = pos - 4;
-                higherPos = pos + 4;
-                lowerBound = pos - (pos % (this.canvas.width * 4));
-                higherBound = pos + ((this.canvas.width * 4) - (pos % (this.canvas.width * 4)));
+        while(queue.length > 0){
+            let qPos = queue.shift();
 
+            if(qPos < 0 || qPos >= imageData.data.length){
+                continue;
+            }
 
-                imageData.data[pos] = terrainRed;
-                imageData.data[pos + 1] = terrainGreen;
-                imageData.data[pos + 2] = terrainBlue;
-                imageData.data[pos + 3] = 255;
+            if((imageData.data[qPos] == terrain.r && imageData.data[qPos + 1] == terrain.g && imageData.data[qPos + 2] == terrain.b) ||
+             (!(imageData.data[qPos] == red && imageData.data[qPos + 1] == green && imageData.data[qPos + 2] == blue) && isTerrain(rgbToHex(imageData.data[qPos], imageData.data[qPos + 1], imageData.data[qPos + 2])))){
+                continue;
+            }
+            else{
+                imageData.data[qPos] = terrain.r;
+                imageData.data[qPos + 1] = terrain.g;
+                imageData.data[qPos + 2] = terrain.b;
+                imageData.data[qPos + 3] = 255;
 
-                while(lowerPos >= lowerBound && (imageData.data[lowerPos] >= red - colorOffset && imageData.data[lowerPos + 1] >= green - colorOffset && imageData.data[lowerPos + 2] >= blue - colorOffset) + (imageData.data[lowerPos] <= red + colorOffset && imageData.data[lowerPos + 1] <= green + colorOffset && imageData.data[lowerPos + 2] <= blue + colorOffset)){
-                    console.log('Lower Pos: ' + lowerPos);
-                    imageData.data[lowerPos] = terrainRed;
-                    imageData.data[lowerPos + 1] = terrainGreen;
-                    imageData.data[lowerPos + 2] = terrainBlue;
-                    imageData.data[lowerPos + 3] = 255;
-
-                    if(imageData.data[lowerPos + (this.canvas.width * 4)] == red && imageData.data[lowerPos + (this.canvas.width * 4) + 1] == green && imageData.data[lowerPos + (this.canvas.width * 4) + 2] == blue){
-                        pixelStack.push(lowerPos + (this.canvas.width * 4));
-                    }
-
-                    if(imageData.data[lowerPos - (this.canvas.width * 4)] == red && imageData.data[lowerPos - (this.canvas.width * 4) + 1] == green && imageData.data[lowerPos - (this.canvas.width * 4) + 2] == blue){
-                        pixelStack.push(lowerPos - (this.canvas.width * 4));
-                    }
-
-                    lowerPos -= 4;
-                }
-
-                while(higherPos <= higherBound && (imageData.data[higherPos] >= red - colorOffset && imageData.data[higherPos + 1] >= green - colorOffset && imageData.data[higherPos + 2] >= blue - colorOffset) && (imageData.data[higherPos] <= red + colorOffset && imageData.data[higherPos + 1] <= green + colorOffset && imageData.data[higherPos + 2] <= blue + colorOffset)){
-                    console.log('Higher Pos: ' + higherPos);
-                    imageData.data[higherPos] = terrainRed;
-                    imageData.data[higherPos + 1] = terrainGreen;
-                    imageData.data[higherPos + 2] = terrainBlue;
-                    imageData.data[higherPos + 3] = 255;
-
-                    if(imageData.data[higherPos + (this.canvas.width * 4)] == red && imageData.data[higherPos + (this.canvas.width * 4) + 1] == green && imageData.data[higherPos + (this.canvas.width * 4) + 2] == blue){
-                        pixelStack.push(higherPos + (this.canvas.width * 4));
-                    }
-
-                    if(imageData.data[higherPos - (this.canvas.width * 4)] == red && imageData.data[higherPos - (this.canvas.width * 4) + 1] == green && imageData.data[higherPos - (this.canvas.width * 4) + 2] == blue){
-                        pixelStack.push(higherPos - (this.canvas.width * 4));
-                    }
-
-                    higherPos += 4;
-                }
+                queue.push(qPos + (this.canvas.width * 4));
+                queue.push(qPos - 4);
+                queue.push(qPos - (this.canvas.width * 4));
+                queue.push(qPos + 4);
             }
         }
     }
@@ -298,14 +269,8 @@ class Canvas extends Component{
 
         this.context.moveTo(pos1.x, pos1.y);
         this.context.lineTo(pos1.x, pos2.y);
-
-        this.context.moveTo(pos1.x, pos2.y);
         this.context.lineTo(pos2.x, pos2.y);
-
-        this.context.moveTo(pos2.x, pos2.y);
         this.context.lineTo(pos2.x, pos1.y);
-
-        this.context.moveTo(pos2.x, pos1.y);
         this.context.lineTo(pos1.x, pos1.y);
 
         this.context.closePath();
@@ -404,39 +369,6 @@ class Canvas extends Component{
             .then(response => console.log(response.data));
     }
 
-    cleanUpAntialiasing(imageData){
-        for(let y = 0; y < this.canvas.height; y++){
-            for(let x = 0; x < this.canvas.width; x++){
-                if(!isTerrain(rgbToHex(imageData.data[(y * this.canvas.width + x) * 4], imageData.data[(y * this.canvas.width + x) * 4 + 1], imageData.data[(y * this.canvas.width + x) * 4 + 2]))){
-
-                    if(x < this.canvas.width - 1 && isTerrain(rgbToHex(imageData.data[(y * this.canvas.width + x + 1) * 4], imageData.data[(y * this.canvas.width + x + 1) * 4 + 1], imageData.data[(y * this.canvas.width + x + 1) * 4 + 2]))){
-                        imageData.data[(y * this.canvas.width + x) * 4] = imageData.data[(y * this.canvas.width + x + 1) * 4];
-                        imageData.data[(y * this.canvas.width + x) * 4 + 1] = imageData.data[(y * this.canvas.width + x + 1) * 4 + 1];
-                        imageData.data[(y * this.canvas.width + x) * 4 + 2] = imageData.data[(y * this.canvas.width + x + 1) * 4 + 2];
-                    }
-
-                    else if(x > 0 && isTerrain(rgbToHex(imageData.data[(y * this.canvas.width + x - 1) * 4], imageData.data[(y * this.canvas.width + x - 1) * 4 + 1], imageData.data[(y * this.canvas.width + x - 1) * 4 + 2]))){
-                        imageData.data[(y * this.canvas.width + x) * 4] = imageData.data[(y * this.canvas.width + x - 1) * 4];
-                        imageData.data[(y * this.canvas.width + x) * 4 + 1] = imageData.data[(y * this.canvas.width + x - 1) * 4 + 1];
-                        imageData.data[(y * this.canvas.width + x) * 4 + 2] = imageData.data[(y * this.canvas.width + x - 1) * 4 + 2];
-                    }
-
-                    else if(y < this.canvas.height - 1 && isTerrain(rgbToHex(imageData.data[((y + 1) * this.canvas.width + x) * 4], imageData.data[((y + 1) * this.canvas.width + x) * 4 + 1], imageData.data[((y + 1) * this.canvas.width + x) * 4 + 2]))){
-                        imageData.data[(y * this.canvas.width + x) * 4] = imageData.data[((y + 1) * this.canvas.width + x) * 4];
-                        imageData.data[(y * this.canvas.width + x) * 4 + 1] = imageData.data[((y + 1) * this.canvas.width + x) * 4 + 1];
-                        imageData.data[(y * this.canvas.width + x) * 4 + 2] = imageData.data[((y + 1) * this.canvas.width + x) * 4 + 2];
-                    }
-
-                    else{
-                        imageData.data[(y * this.canvas.width + x) * 4] = imageData.data[((y - 1) * this.canvas.width + x) * 4];
-                        imageData.data[(y * this.canvas.width + x) * 4 + 1] = imageData.data[((y - 1) * this.canvas.width + x) * 4 + 1];
-                        imageData.data[(y * this.canvas.width + x) * 4 + 2] = imageData.data[((y - 1) * this.canvas.width + x) * 4 + 2];
-                    }
-                }
-            }
-        }
-    }
-
     render(){
         return(
             <div className="Canvas" width="100%" height={this.state.height}>
@@ -464,10 +396,10 @@ class Canvas extends Component{
         this.context = this.canvas.getContext("2d");
         this.brushSize = document.querySelector("#brush-size");
 
-        this.canvas.width = 1920;
-        this.canvas.height = 1080;
-        this.canvas.style.width = "1600px";
-        this.canvas.style.height = "900px";
+        this.canvas.width = 600;
+        this.canvas.height = 400;
+        this.canvas.style.width = "600px";
+        this.canvas.style.height = "400px";
 
         this.state.styleWidth = parseInt(this.canvas.style.width, 10);
         this.state.styleHeight = parseInt(this.canvas.style.height, 10);
