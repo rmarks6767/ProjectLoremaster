@@ -19,6 +19,8 @@
 // This translates to SELECT * FROM maps WHERE id="kjd8ddf9isd93k3-d-3-d3e3ed3-3dds" OR id="zsdsdsdsdsdcksj-d-3-d3e3ed3-3dds"
 // The WHERE clause is built by the following functions
 
+const getArgs = require('./proccessCommandLineArgs')
+
 function Or(filter) { 
     try {
         switch(filter["operation"]) {
@@ -63,8 +65,9 @@ function Where(ANDList) {
             and = And(AND);
         }
     });
-    // Print the actual command that is generated ONLY WITH --verbose
-    console.log(and);
+    // Print the actual command that is generated ONLY WITH verbose CLARG
+    if ( getArgs().verbose )
+        console.log(and);
     return and;
 }
     

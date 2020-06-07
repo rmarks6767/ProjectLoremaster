@@ -280,27 +280,42 @@ The response:
         "imageLink": "/map1.png",
         "tiles": []
       },
-      ... more results in array
+      {
+        "... more results in array" : ""
+      }
+    ]
   }
 }
 ```
 
 # Current Roadmap to MVP
-- [x] Create generation for unique uuids for every element in the db
+
+## TODO
 - [ ] Redesign SQL to be more coherent and actually relate to eachother
-- [ ] Add command line args 
-    - [ ] ```--verbose / -v```
-    - [ ] ```-dev / -prod``` 
 - [ ] Add ordering and pagination to the Where clause
-- [ ] Map functions
-    - [x] Query  Map successfully
-    - [x] Create Map successfully
-    - [ ] Update Map successfully
-    - [ ] Delete Map successfully
-    - [ ] Subscription for map updates
+- [ ] Add Logging of every request sent to the API
+
+## In Progress In Active
 - [ ] Account functions
     - [x] Query  Account successfully
     - [x] Create Account successfully
     - [ ] Update Account successfully
     - [ ] Delete Account successfully
+
+## In Progress Active 
+- [ ] Map functions
+    - [x] Query  Map successfully
+    - [x] Create Map successfully
+    - [ ] Update Map successfully
+    - [ ] Delete Map successfully
+    - [ ] Subscription for map updates    
+
+## Done
+- [x] Create generation for unique uuids for every element in the db
+- [x] Add command line args 
+    - [x] ```v / verbose```
+    - [x] ```dev / prod```
+    - [x] ```h / help```
+
+
 
