@@ -1,0 +1,14 @@
+Account:
+  Role:
+    Campaign:
+      Characters:
+      RuleSets:
+        CharacterDefs:
+          PlayerDef:
+          NPCDef:
+        StatsAndAbilities:
+        Classes:
+        Items:
+      Maps:
+        Tiles:
+          NPC:

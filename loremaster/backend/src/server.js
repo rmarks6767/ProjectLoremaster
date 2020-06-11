@@ -3,6 +3,7 @@ const cors = require('cors');
 const express_graphql = require('express-graphql') 
 const { schema } = require('./graphql/schema')
 const getArgs = require('./extraFunctions/proccessCommandLineArgs')
+const { Select } = require('./mongodb/mongoFunctions') 
 
 const port = 4000;
 const path = "/";
@@ -11,6 +12,19 @@ const app = express();
 
 // Add cors
 app.use(cors());
+
+// For mongo testing
+app.use("/mongo", async (_, res) => 
+    res.send( 
+        await Select()
+        .then( (result) => { 
+            return result 
+        }) 
+        .catch( (error) => {
+            return error;
+        })
+    ) 
+)
 
 app.use(path, express_graphql({
     schema: schema,
